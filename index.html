@@ -74,6 +74,7 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 14px;
+            box-sizing: border-box;
         }
 
         .moyenne-total {
@@ -149,12 +150,14 @@
         <button onclick="choisirFiliere('ST')">ST</button>
         <button onclick="choisirFiliere('SM')">SM</button>
         <button onclick="choisirFiliere('ECG')">ECG</button>
+        <div class="footer">Par Dilmi Amine</div>
     </div>
 
     <div id="choix-semestre" class="container" style="display: none;">
         <h1>Choisissez votre semestre</h1>
         <div id="semestres"></div>
         <button onclick="retour('choix-filiere')">Retour</button>
+        <div class="footer">Par Dilmi Amine</div>
     </div>
 
     <div id="tableau-modules" class="container" style="display: none;">
