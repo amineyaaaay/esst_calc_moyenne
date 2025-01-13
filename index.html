@@ -128,13 +128,14 @@
                 <!-- Lignes dynamiques -->
             </tbody>
         </table>
+        <button onclick="ajouterModule()">Ajouter un module</button>
         <button onclick="calculerMoyenne()">Calculer la Moyenne</button>
         <div id="resultat"></div>
         <button onclick="retour('choix-semestre')">Retour</button>
     </div>
 
     <script>
-        const modulesCount = 9;
+        const modulesParDefaut = 6;
 
         function choisirAnnee(annee) {
             document.getElementById('choix-annee').style.display = 'none';
@@ -153,23 +154,30 @@
             const tableBody = document.getElementById('table-body');
             tableBody.innerHTML = '';
 
-            for (let i = 1; i <= modulesCount; i++) {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><input type="text" placeholder="Module ${i}"></td>
-                    <td><input type="number" class="coefficient" value="0" min="0" max="20" onchange="checkCoef(this)"></td>
-                    <td><input type="number" class="interro" min="0" max="20" onchange="checkNote(this)"></td>
-                    <td><input type="number" class="cc1" min="0" max="20" onchange="checkNote(this)"></td>
-                    <td><input type="number" class="cc2" min="0" max="20" onchange="checkNote(this)"></td>
-                    <td><input type="number" class="autre" min="0" max="20" onchange="checkNote(this)"></td>
-                    <td><span class="moyenne-cc">0</span></td>
-                    <td><input type="number" class="examen-normale" min="0" max="20" onchange="checkNote(this)"></td>
-                    <td><span class="moyenne-normale">0</span></td>
-                    <td><input type="number" class="examen-rattrapage" min="0" max="20" onchange="checkNote(this)"></td>
-                    <td><span class="moyenne-rattrapage">0</span></td>
-                `;
-                tableBody.appendChild(row);
+            for (let i = 1; i <= modulesParDefaut; i++) {
+                ajouterModule();
             }
+        }
+
+        function ajouterModule() {
+            const tableBody = document.getElementById('table-body');
+            const row = document.createElement('tr');
+            const moduleIndex = tableBody.children.length + 1;
+
+            row.innerHTML = `
+                <td><input type="text" placeholder="Module ${moduleIndex}"></td>
+                <td><input type="number" class="coefficient" value="0" min="0" max="20" onchange="checkCoef(this)"></td>
+                <td><input type="number" class="interro" min="0" max="20" onchange="checkNote(this)"></td>
+                <td><input type="number" class="cc1" min="0" max="20" onchange="checkNote(this)"></td>
+                <td><input type="number" class="cc2" min="0" max="20" onchange="checkNote(this)"></td>
+                <td><input type="number" class="autre" min="0" max="20" onchange="checkNote(this)"></td>
+                <td><span class="moyenne-cc">0</span></td>
+                <td><input type="number" class="examen-normale" min="0" max="20" onchange="checkNote(this)"></td>
+                <td><span class="moyenne-normale">0</span></td>
+                <td><input type="number" class="examen-rattrapage" min="0" max="20" onchange="checkNote(this)"></td>
+                <td><span class="moyenne-rattrapage">0</span></td>
+            `;
+            tableBody.appendChild(row);
         }
 
         function checkCoef(input) {
