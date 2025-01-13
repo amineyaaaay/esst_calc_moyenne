@@ -177,23 +177,26 @@
 
             rows.forEach(row => {
                 const coef = parseFloat(row.querySelector('.coefficient').value) || 1;
-                const interro = parseFloat(row.querySelector('.interro').value) || 0;
+                const interro = parseFloat(row.querySelector('.interro').value) || null;
                 const cc1 = parseFloat(row.querySelector('.cc1').value) || 0;
                 const cc2 = parseFloat(row.querySelector('.cc2').value) || 0;
-                const autre = parseFloat(row.querySelector('.autre').value) || 0;
-                const examenNormale = parseFloat(row.querySelector('.examen-normale').value) || 0;
-                const examenRattrapage = parseFloat(row.querySelector('.examen-rattrapage').value) || 0;
+                const autre = parseFloat(row.querySelector('.autre').value) || null;
+                const examenNormale = parseFloat(row.querySelector('.examen-normale').value) || null;
+                const examenRattrapage = parseFloat(row.querySelector('.examen-rattrapage').value) || null;
 
-                const moyenneCC = ((interro + cc1 + cc2 + autre) / 4).toFixed(2);
+                const moyenneCC = interro !== null || autre !== null 
+                    ? ((cc1 + cc2 + (interro || 0) + (autre || 0)) / (4 - (interro === null ? 1 : 0) - (autre === null ? 1 : 0))).toFixed(2)
+                    : ((cc1 + cc2) / 2).toFixed(2);
                 row.querySelector('.moyenne-cc').textContent = moyenneCC;
 
-                const moyenneNormale = (0.4 * moyenneCC + 0.6 * examenNormale).toFixed(2);
+                const moyenneNormale = examenNormale !== null ? (0.4 * moyenneCC + 0.6 * examenNormale).toFixed(2) : moyenneCC;
                 row.querySelector('.moyenne-normale').textContent = moyenneNormale;
 
-                const moyenneRattrapage = (0.4 * moyenneCC + 0.6 * examenRattrapage).toFixed(2);
-                row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage;
+                const moyenneRattrapage = examenRattrapage !== null ? (0.4 * moyenneCC + 0.6 * examenRattrapage).toFixed(2) : null;
+                if (moyenneRattrapage !== null) row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage;
 
-                totalPoints += parseFloat(moyenneNormale) * coef || 0;
+                const moyenneModule = moyenneRattrapage !== null ? parseFloat(moyenneRattrapage) : parseFloat(moyenneNormale);
+                totalPoints += moyenneModule * coef;
                 totalCoef += coef;
             });
 
