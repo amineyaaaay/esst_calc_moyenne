@@ -89,6 +89,50 @@
             width: 150px;
             font-size: 18px;
         }
+
+        /* Media queries pour les petits écrans (téléphones) */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5em; /* Taille du texte plus petite sur téléphone */
+            }
+
+            .container {
+                padding: 20px;
+                margin: 15px auto;
+                width: 100%;
+            }
+
+            .filiere-choice button, .niveau-choice button, .sous-niveau-choice button {
+                width: 120px; /* Réduction de la largeur des boutons */
+                font-size: 14px;
+            }
+
+            table, input[type="number"] {
+                font-size: 14px; /* Taille du texte dans le tableau plus petite sur téléphone */
+            }
+        }
+
+        /* Media queries pour les très petits écrans (petits téléphones) */
+        @media (max-width: 480px) {
+            button {
+                padding: 8px 16px; /* Réduction des marges et padding des boutons */
+                font-size: 14px;
+            }
+
+            .container {
+                padding: 15px;
+                margin: 10px auto;
+            }
+
+            .filiere-choice, .niveau-choice, .sous-niveau-choice {
+                flex-direction: column; /* Disposer les boutons verticalement */
+            }
+
+            .filiere-choice button, .niveau-choice button, .sous-niveau-choice button {
+                width: 100%; /* Largeur des boutons pleine largeur */
+                margin-bottom: 10px; /* Espacement entre les boutons */
+            }
+        }
     </style>
 </head>
 <body>
