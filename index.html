@@ -176,7 +176,7 @@
             let totalPoints = 0, totalCoef = 0;
 
             rows.forEach(row => {
-                const coef = parseFloat(row.querySelector('.coefficient').value) || 1;
+                const coef = parseFloat(row.querySelector('.coefficient').value) || 0;
                 const interro = parseFloat(row.querySelector('.interro').value) || null;
                 const cc1 = parseFloat(row.querySelector('.cc1').value) || 0;
                 const cc2 = parseFloat(row.querySelector('.cc2').value) || 0;
@@ -195,12 +195,15 @@
                 const moyenneRattrapage = examenRattrapage !== null ? (0.4 * moyenneCC + 0.6 * examenRattrapage).toFixed(2) : null;
                 if (moyenneRattrapage !== null) row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage;
 
-                const moyenneModule = moyenneRattrapage !== null ? parseFloat(moyenneRattrapage) : parseFloat(moyenneNormale);
+                // Si aucune note n'est remplie pour ce module, le coefficient est 0
+                const moyenneModule = (coef > 0 && (moyenneNormale || moyenneRattrapage)) 
+                    ? (moyenneRattrapage !== null ? parseFloat(moyenneRattrapage) : parseFloat(moyenneNormale)) 
+                    : 0;
                 totalPoints += moyenneModule * coef;
                 totalCoef += coef;
             });
 
-            const moyenneGenerale = (totalPoints / totalCoef).toFixed(2);
+            const moyenneGenerale = totalCoef > 0 ? (totalPoints / totalCoef).toFixed(2) : 0;
             document.getElementById('resultat').textContent = `Votre moyenne générale est : ${moyenneGenerale}`;
         }
 
