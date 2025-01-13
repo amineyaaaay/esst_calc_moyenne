@@ -8,19 +8,20 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f4f8;
+            color: #333;
             margin: 0;
             padding: 0;
+            text-align: center;
         }
 
         .container {
-            width: 90%;
-            max-width: 700px;
-            margin: 50px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
+            width: 95%;
+            max-width: 1200px;
+            margin: 30px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
@@ -28,66 +29,103 @@
         }
 
         button {
-            background-color: #007bff;
-            color: white;
+            padding: 10px 15px;
+            font-size: 14px;
             border: none;
             border-radius: 5px;
-            padding: 10px 20px;
-            margin: 10px 5px;
             cursor: pointer;
-            font-size: 16px;
+            transition: background-color 0.3s ease;
+            margin: 5px;
         }
 
         button:hover {
-            background-color: #0056b3;
+            opacity: 0.9;
+        }
+
+        .btn-ajouter {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-ajouter:hover {
+            background-color: #218838;
+        }
+
+        .btn-supprimer {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-supprimer:hover {
+            background-color: #c82333;
         }
 
         table {
             width: 100%;
-            margin-top: 20px;
             border-collapse: collapse;
+            margin: 20px 0;
         }
 
-        table th, table td {
+        th, td {
             padding: 10px;
-            border: 1px solid #ddd;
             text-align: center;
+            border: 1px solid #ddd;
         }
 
-        .footer {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            font-size: 16px;
-            font-weight: bold;
+        th {
+            background-color: #f9f9f9;
+        }
+
+        input[type="number"], input[type="text"] {
+            width: 80px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            max-width: 60px;
+        }
+
+        #actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
             color: #777;
         }
     </style>
 </head>
 <body>
-
-    <div id="choix-filiere" class="container">
-        <h1>Choisissez votre filière</h1>
-        <button onclick="choisirFiliere('MI')">MI</button>
-        <button onclick="choisirFiliere('ST')">ST</button>
-        <button onclick="choisirFiliere('SM')">SM</button>
-        <button onclick="choisirFiliere('ECG')">ECG</button>
-    </div>
-
-    <div id="choix-annee" class="container" style="display: none;">
+    <div id="choix-annee" class="container">
         <h1>Choisissez votre année universitaire</h1>
         <button onclick="choisirAnnee('L1')">L1</button>
         <button onclick="choisirAnnee('L2')">L2</button>
         <button onclick="choisirAnnee('L3')">L3</button>
         <button onclick="choisirAnnee('M1')">M1</button>
         <button onclick="choisirAnnee('M2')">M2</button>
-        <button onclick="retour('choix-filiere')">Retour</button>
+        <footer>Par Dilmi Amine</footer>
+    </div>
+
+    <div id="choix-filiere" class="container" style="display: none;">
+        <h1>Choisissez votre filière</h1>
+        <button onclick="choisirFiliere('MI')">MI</button>
+        <button onclick="choisirFiliere('ST')">ST</button>
+        <button onclick="choisirFiliere('SM')">SM</button>
+        <button onclick="choisirFiliere('ECG')">ECG</button>
+        <button onclick="retour('choix-annee')">Retour</button>
+        <footer>Par Dilmi Amine</footer>
     </div>
 
     <div id="choix-semestre" class="container" style="display: none;">
         <h1>Choisissez votre semestre</h1>
-        <div id="semestre-buttons"></div>
-        <button onclick="retour('choix-annee')">Retour</button>
+        <button onclick="choisirSemestre('S1')">S1</button>
+        <button onclick="choisirSemestre('S2')">S2</button>
+        <button onclick="choisirSemestre('S3')">S3</button>
+        <button onclick="choisirSemestre('S4')">S4</button>
+        <button onclick="retour('choix-filiere')">Retour</button>
+        <footer>Par Dilmi Amine</footer>
     </div>
 
     <div id="calcul-moyenne" class="container" style="display: none;">
@@ -106,100 +144,95 @@
                     <th>Moyenne Finale</th>
                 </tr>
             </thead>
-            <tbody id="table-body"></tbody>
+            <tbody id="table-body">
+                <!-- Modules remplis dynamiquement -->
+            </tbody>
         </table>
+        <div id="actions">
+            <button class="btn-ajouter" onclick="ajouterModule()">Ajouter un module</button>
+            <button class="btn-supprimer" onclick="supprimerDerniereLigne()">Supprimer le dernier module</button>
+        </div>
         <button onclick="calculerMoyenne()">Calculer</button>
         <button onclick="retour('choix-semestre')">Retour</button>
+        <footer>Par Dilmi Amine</footer>
     </div>
 
-    <div class="footer">Par Dilmi Amine</div>
-
     <script>
-        const filieres = ["MI", "ST", "SM", "ECG"];
-        const annees = ["L1", "L2", "L3", "M1", "M2"];
-        const semestresParAnnee = {
-            L1: ["S1", "S2"],
-            L2: ["S3", "S4"],
-            L3: ["S5", "S6"],
-            M1: ["S7", "S8"],
-            M2: ["S9", "S10"]
+        const modulesParDefaut = {
+            "L1": { "S1": ["Analyse", "Algebre", "ASD", "Structure", "Anglais", "Physique", "Projet"] }
+            // Ajoute les autres semestres ici
         };
-
-        const modules = {
-            MI: {
-                L1: { S1: ["Analyse", "Algèbre", "ASD", "Structure", "Anglais", "Physique", "Projet"], S2: ["Analyse", "Algèbre", "ASD", "Structure", "Probastat", "Physique", "OPM", "TIC"] },
-                L2: { S3: ["ADO", "ASD", "SI", "TG", "MN", "IM", "Anglais"], S4: ["THL", "SE", "BDD", "RES", "POO", "DWEB", "Anglais"] },
-                L3: { S5: ["SID", "SAD", "GL", "IHM", "ASI", "PAW", "ENVS", "SYST", "Anglais"], S6: ["L31M", "L32M", "L34M", "L35M"] },
-                M1: { S7: ["M11M", "M12M", "M13M"], S8: ["M11M", "M12M"] },
-                M2: { S9: ["M11M", "M12M"], S10: ["M11M", "M12M"] }
-            },
-            ST: { /* Modules pour ST */ },
-            SM: { /* Modules pour SM */ },
-            ECG: { /* Modules pour ECG */ }
-        };
-
-        let selectedFiliere = "";
-        let selectedAnnee = "";
-        let selectedSemestre = "";
-
-        function choisirFiliere(filiere) {
-            selectedFiliere = filiere;
-            afficherSection("choix-annee");
-        }
 
         function choisirAnnee(annee) {
-            selectedAnnee = annee;
-            const semestreButtons = document.getElementById("semestre-buttons");
-            semestreButtons.innerHTML = "";
-            semestresParAnnee[annee].forEach(semestre => {
-                const button = document.createElement("button");
-                button.textContent = semestre;
-                button.onclick = () => choisirSemestre(semestre);
-                semestreButtons.appendChild(button);
-            });
-            afficherSection("choix-semestre");
+            document.getElementById('choix-annee').style.display = 'none';
+            document.getElementById('choix-filiere').style.display = 'block';
+        }
+
+        function choisirFiliere(filiere) {
+            document.getElementById('choix-filiere').style.display = 'none';
+            document.getElementById('choix-semestre').style.display = 'block';
         }
 
         function choisirSemestre(semestre) {
-            selectedSemestre = semestre;
-            afficherTableauModules();
-            afficherSection("calcul-moyenne");
+            document.getElementById('choix-semestre').style.display = 'none';
+            document.getElementById('calcul-moyenne').style.display = 'block';
+
+            const tableBody = document.getElementById('table-body');
+            tableBody.innerHTML = '';
+            const modules = modulesParDefaut["L1"]["S1"]; // Exemple pour L1 S1
+            modules.forEach(module => ajouterModule(module));
         }
 
-        function afficherTableauModules() {
-            const tableBody = document.getElementById("table-body");
-            tableBody.innerHTML = "";
-            const modulesSemestre = modules[selectedFiliere][selectedAnnee][selectedSemestre];
-            modulesSemestre.forEach(module => {
-                const row = `
-                    <tr>
-                        <td>${module}</td>
-                        <td><input type="number" value="0"></td>
-                        <td><input type="number" value="0"></td>
-                        <td><input type="number" value="0"></td>
-                        <td><input type="number" value="0"></td>
-                        <td><input type="number" value="0"></td>
-                        <td>0</td>
-                        <td><input type="number" value="0"></td>
-                        <td>0</td>
-                    </tr>
-                `;
-                tableBody.innerHTML += row;
-            });
+        function ajouterModule(nom = "") {
+            const tableBody = document.getElementById('table-body');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="text" value="${nom}" readonly></td>
+                <td><input type="number" min="0" max="20" value="0"></td>
+                <td><input type="number" min="0" max="20"></td>
+                <td><input type="number" min="0" max="20"></td>
+                <td><input type="number" min="0" max="20"></td>
+                <td><input type="number" min="0" max="20"></td>
+                <td>0.00</td>
+                <td><input type="number" min="0" max="20"></td>
+                <td>0.00</td>
+            `;
+            tableBody.appendChild(row);
+        }
+
+        function supprimerDerniereLigne() {
+            const tableBody = document.getElementById('table-body');
+            if (tableBody.children.length > 0) {
+                tableBody.lastChild.remove();
+            } else {
+                alert('Aucune ligne à supprimer.');
+            }
         }
 
         function calculerMoyenne() {
-            // Implémentation de la logique de calcul ici
-            alert("Calcul en cours...");
+            const rows = document.querySelectorAll("#table-body tr");
+            rows.forEach(row => {
+                const inputs = row.querySelectorAll("input");
+                const coeff = parseFloat(inputs[1].value) || 0;
+                const interro = parseFloat(inputs[2].value) || 0;
+                const cc1 = parseFloat(inputs[3].value) || 0;
+                const cc2 = parseFloat(inputs[4].value) || 0;
+                const autre = parseFloat(inputs[5].value) || 0;
+                const examen = parseFloat(inputs[6].value) || 0;
+
+                let moyenneCC = (cc1 + cc2) / 2;
+                if (interro) moyenneCC = (interro + cc1 * 2 + cc2 * 2) / 5;
+                if (autre) moyenneCC = (interro + cc1 * 2 + cc2 * 2 + autre) / 6;
+
+                const moyenneFinale = (moyenneCC * 2 + examen * 3) / 5;
+                row.children[6].textContent = moyenneCC.toFixed(2);
+                row.children[7].textContent = moyenneFinale.toFixed(2);
+            });
         }
 
-        function afficherSection(sectionId) {
-            document.querySelectorAll(".container").forEach(section => section.style.display = "none");
-            document.getElementById(sectionId).style.display = "block";
-        }
-
-        function retour(section) {
-            afficherSection(section);
+        function retour(page) {
+            document.querySelectorAll('.container').forEach(div => div.style.display = 'none');
+            document.getElementById(page).style.display = 'block';
         }
     </script>
 </body>
