@@ -15,8 +15,8 @@
         }
 
         .container {
-            width: 90%;
-            max-width: 800px;
+            width: 95%;
+            max-width: 1200px;
             margin: 30px auto;
             background-color: white;
             padding: 30px;
@@ -37,6 +37,7 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            margin: 10px;
         }
 
         button:hover {
@@ -94,12 +95,14 @@
         <button onclick="choisirFiliere('ST')">ST</button>
         <button onclick="choisirFiliere('SM')">SM</button>
         <button onclick="choisirFiliere('ECG')">ECG</button>
+        <button onclick="retour('choix-annee')">Retour</button>
     </div>
 
     <div id="choix-semestre" class="container" style="display: none;">
         <h1>Choisissez votre semestre</h1>
         <button onclick="choisirSemestre('S1')">S1</button>
         <button onclick="choisirSemestre('S2')">S2</button>
+        <button onclick="retour('choix-filiere')">Retour</button>
     </div>
 
     <div id="calcul-moyenne" class="container" style="display: none;">
@@ -108,6 +111,7 @@
             <thead>
                 <tr>
                     <th>Module</th>
+                    <th>Coefficient</th>
                     <th>Interro</th>
                     <th>CC1</th>
                     <th>CC2</th>
@@ -125,6 +129,7 @@
         </table>
         <button onclick="calculerMoyenne()">Calculer la Moyenne</button>
         <div id="resultat"></div>
+        <button onclick="retour('choix-semestre')">Retour</button>
     </div>
 
     <script>
@@ -151,6 +156,7 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${module}</td>
+                    <td><input type="number" class="coefficient" value="1"></td>
                     <td><input type="number" class="interro"></td>
                     <td><input type="number" class="cc1"></td>
                     <td><input type="number" class="cc2"></td>
@@ -170,6 +176,7 @@
             let totalPoints = 0, totalCoef = 0;
 
             rows.forEach(row => {
+                const coef = parseFloat(row.querySelector('.coefficient').value) || 1;
                 const interro = parseFloat(row.querySelector('.interro').value) || 0;
                 const cc1 = parseFloat(row.querySelector('.cc1').value) || 0;
                 const cc2 = parseFloat(row.querySelector('.cc2').value) || 0;
@@ -186,12 +193,17 @@
                 const moyenneRattrapage = (0.4 * moyenneCC + 0.6 * examenRattrapage).toFixed(2);
                 row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage;
 
-                totalPoints += parseFloat(moyenneNormale) || 0;
-                totalCoef += 1;
+                totalPoints += parseFloat(moyenneNormale) * coef || 0;
+                totalCoef += coef;
             });
 
             const moyenneGenerale = (totalPoints / totalCoef).toFixed(2);
             document.getElementById('resultat').textContent = `Votre moyenne générale est : ${moyenneGenerale}`;
+        }
+
+        function retour(section) {
+            document.querySelectorAll('.container').forEach(el => el.style.display = 'none');
+            document.getElementById(section).style.display = 'block';
         }
     </script>
 </body>
