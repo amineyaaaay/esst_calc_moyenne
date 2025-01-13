@@ -241,10 +241,13 @@
             let totalMoyenneCC = 0;
             let totalMoyenne = 0;
             let totalModules = 0;
+            let totalCoefficient = 0;
 
             const rows = document.querySelectorAll('#table-body tr');
             rows.forEach(row => {
                 const coeff = parseFloat(row.querySelector('.coefficient').value);
+                if (coeff === 0) return;  // Skip the module if its coefficient is 0
+
                 const interro = parseFloat(row.querySelector('.interro').value);
                 const cc1 = parseFloat(row.querySelector('.cc1').value);
                 const cc2 = parseFloat(row.querySelector('.cc2').value);
@@ -260,12 +263,13 @@
                 row.querySelector('.moyenne').textContent = moyenne.toFixed(2);
                 row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage.toFixed(2);
 
-                totalMoyenneCC += moyenneCC;
-                totalMoyenne += moyenne;
+                totalMoyenneCC += moyenneCC * coeff;
+                totalMoyenne += moyenne * coeff;
+                totalCoefficient += coeff;
                 totalModules++;
             });
 
-            const moyenneGenerale = totalModules > 0 ? totalMoyenne / totalModules : 0;
+            const moyenneGenerale = totalCoefficient > 0 ? totalMoyenne / totalCoefficient : 0;
             document.getElementById('moyenne-cc-total').textContent = moyenneGenerale.toFixed(2);
         }
 
