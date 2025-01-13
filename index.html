@@ -255,10 +255,23 @@
                 const examen = parseFloat(row.querySelector('.examen').value);
                 const rattrapage = parseFloat(row.querySelector('.rattrapage').value);
 
-                const moyenneCC = (interro + cc1 + cc2 + autre) / 4;
+                // Calculate Moyenne CC based on the conditions provided
+                let moyenneCC;
+                if (isNaN(interro) && isNaN(autre)) {
+                    moyenneCC = (cc1 + cc2) / 2;
+                } else if (isNaN(autre)) {
+                    moyenneCC = (interro + (cc1 * 2) + (cc2 * 2)) / 5;
+                } else if (isNaN(interro)) {
+                    moyenneCC = (autre + (cc1 * 2) + (cc2 * 2)) / 5;
+                } else {
+                    moyenneCC = (interro + (cc1 * 2) + (cc2 * 2) + autre) / 6;
+                }
+
+                // Calculate Moyenne and Moyenne Rattrapage
                 const moyenne = (moyenneCC * coeff + examen) / (coeff + 1);
                 const moyenneRattrapage = (moyenneCC * coeff + rattrapage) / (coeff + 1);
 
+                // Update the table with calculated values
                 row.querySelector('.moyenne-cc').textContent = moyenneCC.toFixed(2);
                 row.querySelector('.moyenne').textContent = moyenne.toFixed(2);
                 row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage.toFixed(2);
