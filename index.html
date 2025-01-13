@@ -6,8 +6,8 @@
     <title>Gestion des Modules</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f4f8;
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f9fc;
             color: #333;
             margin: 0;
             padding: 0;
@@ -15,87 +15,83 @@
         }
 
         .container {
-            width: 95%;
+            width: 90%;
             max-width: 1200px;
             margin: 30px auto;
-            background-color: white;
+            background-color: #fff;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
         }
 
         h1 {
+            font-size: 1.8em;
+            color: #4e73df;
             margin-bottom: 20px;
         }
 
         button {
-            padding: 10px 15px;
+            padding: 12px 20px;
             font-size: 14px;
+            margin: 10px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            background-color: #4e73df;
+            color: white;
             transition: background-color 0.3s ease;
-            margin: 5px;
         }
 
         button:hover {
-            opacity: 0.9;
-        }
-
-        .btn-ajouter {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .btn-supprimer {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        .btn-calculer {
-            background-color: #007bff;
-            color: white;
+            background-color: #2e59d9;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
-            overflow-x: auto;
         }
 
         th, td {
-            padding: 10px;
+            padding: 12px;
             text-align: center;
             border: 1px solid #ddd;
         }
 
         th {
-            background-color: #f9f9f9;
+            background-color: #f1f1f1;
+            color: #4e73df;
+        }
+
+        td {
+            background-color: #fafafa;
         }
 
         input[type="number"], input[type="text"] {
-            width: 80px;
+            width: 100%;
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 5px;
-        }
-
-        #signature {
-            margin-top: 20px;
             font-size: 14px;
-            color: #555;
         }
 
         .moyenne-total {
-            margin-top: 20px;
+            font-size: 1.2em;
             font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .footer {
+            font-size: 1.2em;
+            margin-top: 30px;
+            color: #777;
         }
 
         /* Media Queries pour responsive */
         @media (max-width: 768px) {
             .container {
-                padding: 15px;
+                padding: 20px;
             }
 
             table {
@@ -104,22 +100,22 @@
 
             button {
                 font-size: 12px;
-                padding: 8px 12px;
+                padding: 10px;
             }
 
             input[type="number"], input[type="text"] {
-                width: 60px;
-                padding: 6px;
+                font-size: 12px;
+                padding: 10px;
             }
 
             h1 {
-                font-size: 18px;
+                font-size: 1.5em;
             }
         }
 
         @media (max-width: 480px) {
             .container {
-                padding: 10px;
+                padding: 15px;
             }
 
             table {
@@ -128,20 +124,20 @@
 
             button {
                 font-size: 10px;
-                padding: 6px 10px;
+                padding: 8px;
             }
 
             input[type="number"], input[type="text"] {
-                width: 50px;
-                padding: 5px;
+                font-size: 10px;
+                padding: 8px;
             }
 
             h1 {
-                font-size: 16px;
+                font-size: 1.2em;
             }
 
-            .moyenne-total {
-                font-size: 14px;
+            .footer {
+                font-size: 1em;
             }
         }
     </style>
@@ -185,7 +181,7 @@
         <button class="btn-supprimer" onclick="supprimerDerniereLigne()">Supprimer le dernier module</button>
         <button class="btn-calculer" onclick="calculerMoyenneGenerale()">Calculer les moyennes</button>
         <button onclick="retour('choix-semestre')">Retour</button>
-        <div id="signature">Par Dilmi Amine</div>
+        <div class="footer">Par Dilmi Amine</div>
         <div id="moyenne-generale" class="moyenne-total">Moyenne Générale: <span id="moyenne-cc-total">0</span></div>
     </div>
 
@@ -314,21 +310,16 @@
 
                 // Calculate Moyenne CC based on the conditions provided
                 let moyenneCC;
-                if (isNaN(interro) && isNaN(autre)) {
-                    moyenneCC = (cc1 + cc2) / 2;
-                } else if (isNaN(autre)) {
-                    moyenneCC = (interro + (cc1 * 2) + (cc2 * 2)) / 5;
-                } else if (isNaN(interro)) {
-                    moyenneCC = (autre + (cc1 * 2) + (cc2 * 2)) / 5;
+                if (isNaN(interro) || isNaN(cc1) || isNaN(cc2) || isNaN(autre)) {
+                    moyenneCC = 0;
                 } else {
-                    moyenneCC = (interro + (cc1 * 2) + (cc2 * 2) + autre) / 6;
+                    moyenneCC = (interro + cc1 + cc2 + autre) / 4;
                 }
 
-                // Calculate Moyenne and Moyenne Rattrapage
+                // Calculate the final average and rattrapage if necessary
                 const moyenne = (moyenneCC * 0.4 + examen * 0.6);
                 const moyenneRattrapage = (moyenneCC * 0.4 + rattrapage * 0.6);
 
-                // Update the table with calculated values
                 row.querySelector('.moyenne-cc').textContent = moyenneCC.toFixed(2);
                 row.querySelector('.moyenne').textContent = moyenne.toFixed(2);
                 row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage.toFixed(2);
@@ -345,7 +336,6 @@
             document.getElementById('choix-filiere').style.display = 'none';
             document.getElementById('choix-semestre').style.display = 'none';
             document.getElementById('tableau-modules').style.display = 'none';
-
             document.getElementById(id).style.display = 'block';
         }
     </script>
