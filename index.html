@@ -148,8 +148,7 @@
 
         function choisirFiliere(filiere) {
             filiereSelectionnee = filiere;
-            document.getElementById('choix-filiere').style.display = 'none';
-            document.getElementById('choix-semestre').style.display = 'block';
+            switchSection('choix-semestre');
             afficherSemestres();
         }
 
@@ -167,8 +166,7 @@
 
         function choisirSemestre(semestre) {
             semestreSelectionne = semestre;
-            document.getElementById('choix-semestre').style.display = 'none';
-            document.getElementById('tableau-modules').style.display = 'block';
+            switchSection('tableau-modules');
             chargerModules();
         }
 
@@ -279,10 +277,11 @@
             document.getElementById('moyenne-cc-total').textContent = moyenneGenerale.toFixed(2);
         }
 
-        function retour(section) {
-            document.getElementById(section).style.display = 'block';
-            document.getElementById('tableau-modules').style.display = 'none';
-            document.getElementById('choix-semestre').style.display = 'none';
+        function switchSection(sectionToShow) {
+            const sections = ['choix-filiere', 'choix-semestre', 'tableau-modules'];
+            sections.forEach(section => {
+                document.getElementById(section).style.display = section === sectionToShow ? 'block' : 'none';
+            });
         }
     </script>
 </body>
