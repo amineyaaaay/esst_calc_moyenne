@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur de Moyenne</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 30px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: #333;
+            font-size: 2em;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f9f9f9;
+            font-weight: bold;
+        }
+
+        input[type="number"] {
+            width: 80%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        input[type="number"]:focus {
+            outline-color: #007BFF;
+        }
+
+        #resultat {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .instruction {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculateur de Moyenne</h1>
+        
+        <div class="instruction">
+            <p>Bienvenue ! Entrez vos notes et coefficients pour chaque matière dans le tableau ci-dessous. Lorsque vous avez terminé, cliquez sur "Calculer la Moyenne" pour obtenir votre moyenne générale.</p>
+        </div>
+
+        <!-- Tableau des notes -->
+        <table id="notesTable">
+            <thead>
+                <tr>
+                    <th>Matière</th>
+                    <th>Interro</th>
+                    <th>CC1</th>
+                    <th>CC2</th>
+                    <th>Examen</th>
+                    <th>Coefficient</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Mathématiques</td>
+                    <td><input type="number" class="intero"></td>
+                    <td><input type="number" class="cc1"></td>
+                    <td><input type="number" class="cc2"></td>
+                    <td><input type="number" class="examen"></td>
+                    <td><input type="number" class="coef"></td>
+                </tr>
+                <tr>
+                    <td>Français</td>
+                    <td><input type="number" class="intero"></td>
+                    <td><input type="number" class="cc1"></td>
+                    <td><input type="number" class="cc2"></td>
+                    <td><input type="number" class="examen"></td>
+                    <td><input type="number" class="coef"></td>
+                </tr>
+                <!-- Vous pouvez ajouter plus de matières ici -->
+            </tbody>
+        </table>
+
+        <!-- Bouton calculer -->
+        <button onclick="calculerMoyenne()">Calculer la Moyenne</button>
+
+        <!-- Résultat -->
+        <div id="resultat"></div>
+    </div>
+
+    <script>
+        function calculerMoyenne() {
+            const rows = document.querySelectorAll('#notesTable tr');
+            let totalPoints = 0;
+            let totalCoef = 0;
+            let valid = true;
+
+            rows.forEach(row => {
+                const intero = parseFloat(row.querySelector('.intero').value) || 0;
+                const cc1 = parseFloat(row.querySelector('.cc1').value) || 0;
+                const cc2 = parseFloat(row.querySelector('.cc2').value) || 0;
+                const examen = parseFloat(row.querySelector('.examen').value) || 0;
+                const coef = parseFloat(row.querySelector('.coef').value) || 0;
+
+                // Validation : si un champ est vide, afficher un message d'alerte
+                if (!intero || !cc1 || !cc2 || !examen || !coef) {
+                    valid = false;
+                }
+
+                const moyenneCC = (cc1 + cc2) / 2;
+                const moyenneMatiere = (moyenneCC * 0.4) + (examen * 0.6);
+                totalPoints += moyenneMatiere * coef;
+                totalCoef += coef;
+            });
+
+            if (!valid) {
+                alert('Veuillez remplir tous les champs avant de calculer.');
+                return;
+            }
+
+            const moyenneGenerale = totalCoef > 0 ? (totalPoints / totalCoef).toFixed(2) : 0;
+            document.getElementById('resultat').innerText = `Votre moyenne générale est : ${moyenneGenerale}`;
+            document.getElementById('resultat').style.color = 'green'; // Changer la couleur du texte en vert
+        }
+    </script>
+</body>
+</html>
