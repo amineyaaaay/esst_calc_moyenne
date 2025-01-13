@@ -97,10 +97,12 @@
         <!-- Page 1 : Choix de l'année universitaire -->
         <div id="page1" class="page active">
             <h1>Choisissez l'année universitaire</h1>
-            <select id="anneeUniversitaire">
+            <select id="anneeUniversitaire" onchange="mettreAJourSemestres()">
                 <option value="L1">Licence 1</option>
                 <option value="L2">Licence 2</option>
                 <option value="L3">Licence 3</option>
+                <option value="M1">Master 1</option>
+                <option value="M2">Master 2</option>
             </select>
             <button onclick="passerALaPage(2)">Suivant</button>
         </div>
@@ -121,12 +123,7 @@
         <div id="page3" class="page">
             <h1>Choisissez le semestre</h1>
             <select id="semestre">
-                <option value="S1">Semestre 1</option>
-                <option value="S2">Semestre 2</option>
-                <option value="S3">Semestre 3</option>
-                <option value="S4">Semestre 4</option>
-                <option value="S5">Semestre 5</option>
-                <option value="S6">Semestre 6</option>
+                <!-- Les options du semestre seront générées dynamiquement -->
             </select>
             <button onclick="passerALaPage(4)">Suivant</button>
         </div>
@@ -170,6 +167,25 @@
             if (page === 4) {
                 remplirTableau();
             }
+        }
+
+        // Mettre à jour les options de semestre selon l'année universitaire
+        function mettreAJourSemestres() {
+            const annee = document.getElementById('anneeUniversitaire').value;
+            const semestreSelect = document.getElementById('semestre');
+            semestreSelect.innerHTML = '';
+
+            const semestres = annee === 'L1' ? ['S1', 'S2'] :
+                              annee === 'L2' ? ['S3', 'S4'] :
+                              annee === 'L3' ? ['S5', 'S6'] :
+                              annee === 'M1' ? ['S7', 'S8'] : ['S9', 'S10'];
+
+            semestres.forEach(sem => {
+                const option = document.createElement('option');
+                option.value = sem;
+                option.textContent = sem;
+                semestreSelect.appendChild(option);
+            });
         }
 
         // Ajouter les modules au tableau
