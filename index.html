@@ -4,120 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion des Modules</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f7f7f7;
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
             margin: 0;
             padding: 0;
             color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
         }
-
         .container {
-            width: 90%;
+            width: 95%;
             max-width: 1200px;
-            margin: 30px auto;
+            margin: 20px;
             background-color: white;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
-
         h1 {
-            font-family: 'Roboto', sans-serif;
-            font-weight: 500;
             margin-bottom: 20px;
-            color: #333;
+            color: #2c3e50;
         }
-
         button {
-            padding: 12px 18px;
+            padding: 12px 20px;
             font-size: 16px;
             border: none;
-            border-radius: 8px;
+            border-radius: 5px;
             cursor: pointer;
-            margin: 5px;
+            background-color: #3498db;
+            color: white;
+            margin: 10px;
             transition: background-color 0.3s ease;
         }
-
         button:hover {
-            opacity: 0.8;
+            background-color: #2980b9;
         }
-
-        .btn-ajouter {
-            background-color: #28a745;
-            color: white;
+        .btn-ajouter, .btn-supprimer {
+            background-color: #2ecc71;
         }
-
-        .btn-supprimer {
-            background-color: #dc3545;
-            color: white;
+        .btn-ajouter:hover, .btn-supprimer:hover {
+            background-color: #27ae60;
         }
-
-        .btn-calculer {
-            background-color: #007bff;
-            color: white;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
-
         th, td {
             padding: 12px;
             text-align: center;
             border: 1px solid #ddd;
         }
-
         th {
             background-color: #f9f9f9;
         }
-
         input[type="number"], input[type="text"] {
             width: 80px;
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
-
-        #signature {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #555;
-        }
-
         .moyenne-total {
             margin-top: 20px;
             font-weight: bold;
-            font-size: 18px;
+            color: #16a085;
         }
-
-        .moyenne-total span {
-            color: #007bff;
-        }
-
-        #choix-filiere, #choix-semestre, #tableau-modules {
-            display: none;
-        }
-
-        #choix-filiere, #choix-semestre {
-            text-align: center;
-        }
-
-        #semestres button {
-            margin: 5px;
-            padding: 10px 15px;
-            font-size: 16px;
-            background-color: #f0f4f8;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        #semestres button:hover {
-            background-color: #ddd;
+        #signature {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #7f8c8d;
         }
     </style>
 </head>
@@ -178,9 +138,9 @@
                 S9: ["M11M", "M12M"],
                 S10: ["M11M", "M12M"]
             },
-            ST: { /* Ajouter des modules */ },
-            SM: { /* Ajouter des modules */ },
-            ECG: { /* Ajouter des modules */ }
+            ST: {},
+            SM: {},
+            ECG: {}
         };
 
         let filiereSelectionnee = "";
@@ -235,6 +195,7 @@
                 tableBody.appendChild(row);
             });
 
+            // Recalculate the averages after the table is loaded
             calculerMoyenneGenerale();
         }
 
@@ -255,6 +216,8 @@
                 <td class="moyenne-rattrapage">0</td>
             `;
             tableBody.appendChild(row);
+
+            // Recalculate the averages after a new module is added
             calculerMoyenneGenerale();
         }
 
@@ -263,17 +226,20 @@
             if (tableBody.lastChild) {
                 tableBody.removeChild(tableBody.lastChild);
             }
+
+            // Recalculate the averages after a row is deleted
             calculerMoyenneGenerale();
         }
 
         function calculerMoyenneGenerale() {
             let sommeMoyennes = 0;
             let sommeCoefficients = 0;
+            let moyenneGenerale;
 
             const rows = document.querySelectorAll('#table-body tr');
             rows.forEach(row => {
                 const coeff = parseFloat(row.querySelector('.coefficient').value);
-                if (coeff === 0) return; 
+                if (coeff === 0) return;  // Skip the module if its coefficient is 0
 
                 const interro = parseFloat(row.querySelector('.interro').value);
                 const cc1 = parseFloat(row.querySelector('.cc1').value);
@@ -282,10 +248,23 @@
                 const examen = parseFloat(row.querySelector('.examen').value);
                 const rattrapage = parseFloat(row.querySelector('.rattrapage').value);
 
-                const moyenneCC = (interro + cc1 + cc2 + autre) / 4;
+                // Calculate Moyenne CC based on the conditions provided
+                let moyenneCC;
+                if (isNaN(interro) && isNaN(autre)) {
+                    moyenneCC = (cc1 + cc2) / 2;
+                } else if (isNaN(autre)) {
+                    moyenneCC = (interro + (cc1 * 2) + (cc2 * 2)) / 5;
+                } else if (isNaN(interro)) {
+                    moyenneCC = (autre + (cc1 * 2) + (cc2 * 2)) / 5;
+                } else {
+                    moyenneCC = (interro + (cc1 * 2) + (cc2 * 2) + autre) / 6;
+                }
+
+                // Calculate Moyenne and Moyenne Rattrapage
                 const moyenne = (moyenneCC * 0.4 + examen * 0.6);
                 const moyenneRattrapage = (moyenneCC * 0.4 + rattrapage * 0.6);
 
+                // Update the table with calculated values
                 row.querySelector('.moyenne-cc').textContent = moyenneCC.toFixed(2);
                 row.querySelector('.moyenne').textContent = moyenne.toFixed(2);
                 row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage.toFixed(2);
@@ -294,15 +273,16 @@
                 sommeCoefficients += coeff;
             });
 
-            const moyenneGenerale = sommeMoyennes / sommeCoefficients;
+            moyenneGenerale = sommeMoyennes / sommeCoefficients;
+
+            // Update the total moyenne générale
             document.getElementById('moyenne-cc-total').textContent = moyenneGenerale.toFixed(2);
         }
 
-        function retour(id) {
-            document.getElementById(id).style.display = 'block';
-            document.getElementById('choix-filiere').style.display = 'none';
-            document.getElementById('choix-semestre').style.display = 'none';
+        function retour(section) {
+            document.getElementById(section).style.display = 'block';
             document.getElementById('tableau-modules').style.display = 'none';
+            document.getElementById('choix-semestre').style.display = 'none';
         }
     </script>
 </body>
