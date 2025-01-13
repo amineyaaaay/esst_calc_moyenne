@@ -31,7 +31,6 @@
         button {
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #007BFF;
             color: white;
             border: none;
             border-radius: 5px;
@@ -41,7 +40,15 @@
         }
 
         button:hover {
-            background-color: #0056b3;
+            opacity: 0.9;
+        }
+
+        #ajouter-module {
+            background-color: #28a745;
+        }
+
+        #supprimer-module {
+            background-color: #dc3545;
         }
 
         table {
@@ -72,29 +79,6 @@
             outline-color: #007BFF;
         }
 
-        #ajouter-module {
-            background-color: #28a745;
-            color: white;
-            font-weight: bold;
-        }
-
-        #ajouter-module:hover {
-            background-color: #218838;
-        }
-
-        .btn-supprimer {
-            background-color: #dc3545;
-            color: white;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .btn-supprimer:hover {
-            background-color: #c82333;
-        }
-
         #resultat {
             margin-top: 20px;
             font-size: 1.2em;
@@ -104,32 +88,7 @@
     </style>
 </head>
 <body>
-    <div id="choix-annee" class="container">
-        <h1>Choisissez votre année universitaire</h1>
-        <button onclick="choisirAnnee('L1')">L1</button>
-        <button onclick="choisirAnnee('L2')">L2</button>
-        <button onclick="choisirAnnee('L3')">L3</button>
-        <button onclick="choisirAnnee('M1')">M1</button>
-        <button onclick="choisirAnnee('M2')">M2</button>
-    </div>
-
-    <div id="choix-filiere" class="container" style="display: none;">
-        <h1>Choisissez votre filière</h1>
-        <button onclick="choisirFiliere('MI')">MI</button>
-        <button onclick="choisirFiliere('ST')">ST</button>
-        <button onclick="choisirFiliere('SM')">SM</button>
-        <button onclick="choisirFiliere('ECG')">ECG</button>
-        <button onclick="retour('choix-annee')">Retour</button>
-    </div>
-
-    <div id="choix-semestre" class="container" style="display: none;">
-        <h1>Choisissez votre semestre</h1>
-        <button onclick="choisirSemestre('S1')">S1</button>
-        <button onclick="choisirSemestre('S2')">S2</button>
-        <button onclick="retour('choix-filiere')">Retour</button>
-    </div>
-
-    <div id="calcul-moyenne" class="container" style="display: none;">
+    <div class="container">
         <h1>Calcul de la Moyenne</h1>
         <table>
             <thead>
@@ -141,53 +100,39 @@
                     <th>CC2</th>
                     <th>Autre</th>
                     <th>Moyenne CC</th>
-                    <th>Examen Final<br>(Normale)</th>
-                    <th>Moyenne<br>(Normale)</th>
-                    <th>Examen Final<br>(Rattrapage)</th>
-                    <th>Moyenne<br>(Rattrapage)</th>
-                    <th>Actions</th>
+                    <th>Examen Final (Normale)</th>
+                    <th>Moyenne (Normale)</th>
+                    <th>Examen Final (Rattrapage)</th>
+                    <th>Moyenne (Rattrapage)</th>
                 </tr>
             </thead>
             <tbody id="table-body">
                 <!-- Lignes dynamiques -->
             </tbody>
         </table>
-        <button id="ajouter-module" onclick="ajouterModule()">Ajouter un module</button>
+        <div>
+            <button id="ajouter-module" onclick="ajouterModule()">Ajouter un module</button>
+            <button id="supprimer-module" onclick="supprimerDernierModule()">Supprimer le dernier module</button>
+        </div>
         <button onclick="calculerMoyenne()">Calculer la Moyenne</button>
         <div id="resultat"></div>
-        <button onclick="retour('choix-semestre')">Retour</button>
     </div>
 
     <script>
         const modulesParDefaut = 6;
 
-        function choisirAnnee(annee) {
-            document.getElementById('choix-annee').style.display = 'none';
-            document.getElementById('choix-filiere').style.display = 'block';
-        }
-
-        function choisirFiliere(filiere) {
-            document.getElementById('choix-filiere').style.display = 'none';
-            document.getElementById('choix-semestre').style.display = 'block';
-        }
-
-        function choisirSemestre(semestre) {
-            document.getElementById('choix-semestre').style.display = 'none';
-            document.getElementById('calcul-moyenne').style.display = 'block';
-
-            const tableBody = document.getElementById('table-body');
-            tableBody.innerHTML = '';
-
-            for (let i = 1; i <= modulesParDefaut; i++) {
+        // Initialisation avec 6 modules
+        window.onload = () => {
+            for (let i = 0; i < modulesParDefaut; i++) {
                 ajouterModule();
             }
-        }
+        };
 
         function ajouterModule() {
             const tableBody = document.getElementById('table-body');
-            const row = document.createElement('tr');
             const moduleIndex = tableBody.children.length + 1;
 
+            const row = document.createElement('tr');
             row.innerHTML = `
                 <td><input type="text" placeholder="Module ${moduleIndex}"></td>
                 <td><input type="number" class="coefficient" value="0" min="0" max="20" onchange="checkCoef(this)"></td>
@@ -200,14 +145,17 @@
                 <td><span class="moyenne-normale">0</span></td>
                 <td><input type="number" class="examen-rattrapage" min="0" max="20" onchange="checkNote(this)"></td>
                 <td><span class="moyenne-rattrapage">0</span></td>
-                <td><button class="btn-supprimer" onclick="supprimerLigne(this)">Supprimer</button></td>
             `;
             tableBody.appendChild(row);
         }
 
-        function supprimerLigne(button) {
-            const row = button.closest('tr');
-            row.remove();
+        function supprimerDernierModule() {
+            const tableBody = document.getElementById('table-body');
+            if (tableBody.children.length > 0) {
+                tableBody.removeChild(tableBody.lastChild);
+            } else {
+                alert("Aucun module à supprimer !");
+            }
         }
 
         function checkCoef(input) {
@@ -234,38 +182,25 @@
 
             rows.forEach(row => {
                 const coef = parseFloat(row.querySelector('.coefficient').value) || 0;
-                const interro = parseFloat(row.querySelector('.interro').value) || null;
                 const cc1 = parseFloat(row.querySelector('.cc1').value) || 0;
                 const cc2 = parseFloat(row.querySelector('.cc2').value) || 0;
-                const autre = parseFloat(row.querySelector('.autre').value) || null;
-                const examenNormale = parseFloat(row.querySelector('.examen-normale').value) || null;
-                const examenRattrapage = parseFloat(row.querySelector('.examen-rattrapage').value) || null;
-
-                const moyenneCC = interro !== null || autre !== null 
-                    ? ((cc1 + cc2 + (interro || 0) + (autre || 0)) / (4 - (interro === null ? 1 : 0) - (autre === null ? 1 : 0))).toFixed(2)
-                    : ((cc1 + cc2) / 2).toFixed(2);
+                const moyenneCC = ((cc1 + cc2) / 2).toFixed(2);
                 row.querySelector('.moyenne-cc').textContent = moyenneCC;
 
-                const moyenneNormale = examenNormale !== null ? (0.4 * moyenneCC + 0.6 * examenNormale).toFixed(2) : moyenneCC;
+                const examenNormale = parseFloat(row.querySelector('.examen-normale').value) || moyenneCC;
+                const moyenneNormale = (0.4 * moyenneCC + 0.6 * examenNormale).toFixed(2);
                 row.querySelector('.moyenne-normale').textContent = moyenneNormale;
 
-                const moyenneRattrapage = examenRattrapage !== null ? (0.4 * moyenneCC + 0.6 * examenRattrapage).toFixed(2) : null;
-                if (moyenneRattrapage !== null) row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage;
+                const examenRattrapage = parseFloat(row.querySelector('.examen-rattrapage').value) || moyenneNormale;
+                const moyenneRattrapage = (0.4 * moyenneCC + 0.6 * examenRattrapage).toFixed(2);
+                row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage;
 
-                const moyenneModule = (coef > 0 && (moyenneNormale || moyenneRattrapage)) 
-                    ? (moyenneRattrapage !== null ? parseFloat(moyenneRattrapage) : parseFloat(moyenneNormale)) 
-                    : 0;
-                totalPoints += moyenneModule * coef;
+                totalPoints += parseFloat(moyenneRattrapage) * coef;
                 totalCoef += coef;
             });
 
             const moyenneGenerale = totalCoef > 0 ? (totalPoints / totalCoef).toFixed(2) : 0;
             document.getElementById('resultat').textContent = `Votre moyenne générale est : ${moyenneGenerale}`;
-        }
-
-        function retour(section) {
-            document.querySelectorAll('.container').forEach(el => el.style.display = 'none');
-            document.getElementById(section).style.display = 'block';
         }
     </script>
 </body>
