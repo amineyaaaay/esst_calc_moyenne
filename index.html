@@ -72,6 +72,29 @@
             outline-color: #007BFF;
         }
 
+        #ajouter-module {
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+        }
+
+        #ajouter-module:hover {
+            background-color: #218838;
+        }
+
+        .btn-supprimer {
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-supprimer:hover {
+            background-color: #c82333;
+        }
+
         #resultat {
             margin-top: 20px;
             font-size: 1.2em;
@@ -122,13 +145,14 @@
                     <th>Moyenne<br>(Normale)</th>
                     <th>Examen Final<br>(Rattrapage)</th>
                     <th>Moyenne<br>(Rattrapage)</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="table-body">
                 <!-- Lignes dynamiques -->
             </tbody>
         </table>
-        <button onclick="ajouterModule()">Ajouter un module</button>
+        <button id="ajouter-module" onclick="ajouterModule()">Ajouter un module</button>
         <button onclick="calculerMoyenne()">Calculer la Moyenne</button>
         <div id="resultat"></div>
         <button onclick="retour('choix-semestre')">Retour</button>
@@ -176,8 +200,14 @@
                 <td><span class="moyenne-normale">0</span></td>
                 <td><input type="number" class="examen-rattrapage" min="0" max="20" onchange="checkNote(this)"></td>
                 <td><span class="moyenne-rattrapage">0</span></td>
+                <td><button class="btn-supprimer" onclick="supprimerLigne(this)">Supprimer</button></td>
             `;
             tableBody.appendChild(row);
+        }
+
+        function supprimerLigne(button) {
+            const row = button.closest('tr');
+            row.remove();
         }
 
         function checkCoef(input) {
