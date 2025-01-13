@@ -136,31 +136,31 @@
     </style>
 </head>
 <body>
-    <!-- Page de sélection de filière -->
-    <div id="filiere-selection" class="container">
-        <h1>Choisissez votre filière</h1>
+    <!-- Page de sélection de l'année universitaire -->
+    <div id="annee-selection" class="container">
+        <h1>Choisissez votre année universitaire</h1>
         <div class="filiere-choice">
-            <button onclick="choisirFiliere('L1')">L1</button>
-            <button onclick="choisirFiliere('L2')">L2</button>
-            <button onclick="choisirFiliere('L3')">L3</button>
-            <button onclick="choisirFiliere('M1')">M1</button>
-            <button onclick="choisirFiliere('M2')">M2</button>
+            <button onclick="choisirAnnee('L1')">L1</button>
+            <button onclick="choisirAnnee('L2')">L2</button>
+            <button onclick="choisirAnnee('L3')">L3</button>
+            <button onclick="choisirAnnee('M1')">M1</button>
+            <button onclick="choisirAnnee('M2')">M2</button>
         </div>
     </div>
 
-    <!-- Page de sélection de niveau -->
-    <div id="niveau-selection" class="container" style="display: none;">
-        <h1>Choisissez votre niveau</h1>
-        <div id="niveau-buttons" class="niveau-choice"></div>
+    <!-- Page de sélection de la filière -->
+    <div id="filiere-selection" class="container" style="display: none;">
+        <h1>Choisissez votre filière</h1>
+        <div class="filiere-choice" id="filiere-buttons"></div>
     </div>
 
-    <!-- Page de sélection de sous-niveau -->
-    <div id="sous-niveau-selection" class="container" style="display: none;">
-        <h1>Choisissez votre sous-niveau</h1>
-        <div id="sous-niveau-buttons" class="sous-niveau-choice"></div>
+    <!-- Page de sélection du semestre -->
+    <div id="semestre-selection" class="container" style="display: none;">
+        <h1>Choisissez votre semestre</h1>
+        <div id="semestre-buttons" class="niveau-choice"></div>
     </div>
 
-    <!-- Page de calcul de la moyenne (invisible par défaut) -->
+    <!-- Page de calcul de la moyenne -->
     <div id="calcul-moyenne" class="container" style="display: none;">
         <h1>Calcul de la Moyenne</h1>
         <p>Bienvenue dans le calcul de la moyenne du sous-niveau <span id="sous-niveau-nom"></span></p>
@@ -186,74 +186,62 @@
     </div>
 
     <script>
-        // Données pour les filières, niveaux et sous-niveaux
-        const filieres = {
-            L1: {S1: ['Mathématiques', 'Physique', 'Informatique'], S2: ['Biologie', 'Chimie']},
-            L2: {S3: ['Mathématiques', 'Physique', 'Chimie'], S4: ['Informatique', 'Biologie']},
-            L3: {S5: ['Mathématiques', 'Informatique', 'Biologie'], S6: ['Chimie', 'Physique']},
-            M1: {S7: ['Mathématiques', 'Informatique', 'Économie'], S8: ['Gestion', 'Électronique']},
-            M2: {S9: ['Informatique', 'Économie', 'Gestion'], S10: ['Mathématiques', 'Électronique']}
+        // Données pour les années, filières et semestres
+        const parcours = {
+            L1: { MI: ['S1', 'S2'], ST: ['S1', 'S2'], SM: ['S1', 'S2'], ECG: ['S1', 'S2'] },
+            L2: { MI: ['S3', 'S4'], ST: ['S3', 'S4'], SM: ['S3', 'S4'], ECG: ['S3', 'S4'] },
+            L3: { MI: ['S5', 'S6'], ST: ['S5', 'S6'], SM: ['S5', 'S6'], ECG: ['S5', 'S6'] },
+            M1: { MI: ['S7', 'S8'], ST: ['S7', 'S8'], SM: ['S7', 'S8'], ECG: ['S7', 'S8'] },
+            M2: { MI: ['S9', 'S10'], ST: ['S9', 'S10'], SM: ['S9', 'S10'], ECG: ['S9', 'S10'] }
         };
 
-        // Fonction pour afficher le choix de niveau selon la filière choisie
-        function choisirFiliere(filiere) {
-            // Masquer la page de sélection de filière
-            document.getElementById('filiere-selection').style.display = 'none';
-            // Afficher la page de sélection de niveau
-            document.getElementById('niveau-selection').style.display = 'block';
+        let anneeSelectionnee = "";
 
-            const niveauButtons = document.getElementById('niveau-buttons');
-            niveauButtons.innerHTML = ''; // Vider les boutons précédents
+        // Fonction pour afficher la sélection de la filière selon l'année choisie
+        function choisirAnnee(annee) {
+            anneeSelectionnee = annee;
+            document.getElementById('annee-selection').style.display = 'none';
+            document.getElementById('filiere-selection').style.display = 'block';
 
-            // Ajouter les boutons de niveau en fonction de la filière
-            if (filiere === 'L1') {
-                niveauButtons.innerHTML = `
-                    <button onclick="choisirSousNiveau('S1')">S1</button>
-                    <button onclick="choisirSousNiveau('S2')">S2</button>
-                `;
-            } else if (filiere === 'L2') {
-                niveauButtons.innerHTML = `
-                    <button onclick="choisirSousNiveau('S3')">S3</button>
-                    <button onclick="choisirSousNiveau('S4')">S4</button>
-                `;
-            } else if (filiere === 'L3') {
-                niveauButtons.innerHTML = `
-                    <button onclick="choisirSousNiveau('S5')">S5</button>
-                    <button onclick="choisirSousNiveau('S6')">S6</button>
-                `;
-            } else if (filiere === 'M1') {
-                niveauButtons.innerHTML = `
-                    <button onclick="choisirSousNiveau('S7')">S7</button>
-                    <button onclick="choisirSousNiveau('S8')">S8</button>
-                `;
-            } else if (filiere === 'M2') {
-                niveauButtons.innerHTML = `
-                    <button onclick="choisirSousNiveau('S9')">S9</button>
-                    <button onclick="choisirSousNiveau('S10')">S10</button>
-                `;
-            }
+            const filiereButtons = document.getElementById('filiere-buttons');
+            filiereButtons.innerHTML = ''; // Vider les boutons précédents
+
+            // Afficher les filières disponibles pour l'année choisie
+            const filieres = Object.keys(parcours[annee]);
+            filieres.forEach(filiere => {
+                filiereButtons.innerHTML += `<button onclick="choisirFiliere('${filiere}')">${filiere}</button>`;
+            });
         }
 
-        // Fonction pour afficher le choix de sous-niveau en fonction du niveau
-        function choisirSousNiveau(sousNiveau) {
-            // Masquer la page de sélection de niveau
-            document.getElementById('niveau-selection').style.display = 'none';
-            // Afficher la page de sélection de sous-niveau
-            document.getElementById('sous-niveau-selection').style.display = 'none';
+        // Fonction pour afficher la sélection du semestre selon la filière choisie
+        function choisirFiliere(filiere) {
+            document.getElementById('filiere-selection').style.display = 'none';
+            document.getElementById('semestre-selection').style.display = 'block';
+
+            const semestreButtons = document.getElementById('semestre-buttons');
+            semestreButtons.innerHTML = ''; // Vider les boutons précédents
+
+            // Ajouter les semestres disponibles pour la filière choisie
+            const semestres = parcours[anneeSelectionnee][filiere];
+            semestres.forEach(semestre => {
+                semestreButtons.innerHTML += `<button onclick="choisirSemestre('${semestre}')">${semestre}</button>`;
+            });
+        }
+
+        // Fonction pour afficher le tableau en fonction du semestre choisi
+        function choisirSemestre(semestre) {
+            document.getElementById('semestre-selection').style.display = 'none';
             document.getElementById('calcul-moyenne').style.display = 'block';
 
-            // Mettre à jour le nom du sous-niveau
-            document.getElementById('sous-niveau-nom').innerText = sousNiveau;
+            document.getElementById('sous-niveau-nom').innerText = semestre;
 
-            // Remplir le tableau avec les matières de ce sous-niveau
+            // Remplir le tableau avec des matières fictives
             const tableBody = document.getElementById('table-body');
-            tableBody.innerHTML = ''; // Effacer les anciennes lignes
-
-            const matieres = filieres[sousNiveau];
-            matieres.forEach(matiere => {
+            tableBody.innerHTML = '';
+            for (let i = 0; i < 5; i++) {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${matiere}</td>
+                    <td>Matière ${i + 1}</td>
                     <td><input type="number" class="intero"></td>
                     <td><input type="number" class="cc1"></td>
                     <td><input type="number" class="cc2"></td>
@@ -261,7 +249,7 @@
                     <td><input type="number" class="coef"></td>
                 `;
                 tableBody.appendChild(row);
-            });
+            }
         }
 
         // Fonction pour calculer la moyenne
@@ -269,7 +257,6 @@
             const rows = document.querySelectorAll('#notesTable tr');
             let totalPoints = 0;
             let totalCoef = 0;
-            let valid = true;
 
             rows.forEach(row => {
                 const intero = parseFloat(row.querySelector('.intero').value) || 0;
@@ -278,25 +265,15 @@
                 const examen = parseFloat(row.querySelector('.examen').value) || 0;
                 const coef = parseFloat(row.querySelector('.coef').value) || 0;
 
-                // Validation : si un champ est vide, afficher un message d'alerte
-                if (!intero || !cc1 || !cc2 || !examen || !coef) {
-                    valid = false;
-                }
-
                 const moyenneCC = (cc1 + cc2) / 2;
                 const moyenneMatiere = (moyenneCC * 0.4) + (examen * 0.6);
                 totalPoints += moyenneMatiere * coef;
                 totalCoef += coef;
             });
 
-            if (!valid) {
-                alert('Veuillez remplir tous les champs avant de calculer.');
-                return;
-            }
-
             const moyenneGenerale = totalCoef > 0 ? (totalPoints / totalCoef).toFixed(2) : 0;
             document.getElementById('resultat').innerText = `Votre moyenne générale est : ${moyenneGenerale}`;
-            document.getElementById('resultat').style.color = 'green'; // Changer la couleur du texte en vert
+            document.getElementById('resultat').style.color = 'green';
         }
     </script>
 </body>
