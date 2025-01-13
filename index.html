@@ -31,7 +31,6 @@
         button {
             padding: 10px 20px;
             font-size: 16px;
-            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -39,16 +38,24 @@
             margin: 10px;
         }
 
-        button:hover {
-            opacity: 0.9;
-        }
-
         #ajouter-module {
             background-color: #28a745;
+            color: white;
+            font-weight: bold;
+        }
+
+        #ajouter-module:hover {
+            background-color: #218838;
         }
 
         #supprimer-module {
             background-color: #dc3545;
+            color: white;
+            font-weight: bold;
+        }
+
+        #supprimer-module:hover {
+            background-color: #c82333;
         }
 
         table {
@@ -88,7 +95,7 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div id="calcul-moyenne" class="container">
         <h1>Calcul de la Moyenne</h1>
         <table>
             <thead>
@@ -100,10 +107,10 @@
                     <th>CC2</th>
                     <th>Autre</th>
                     <th>Moyenne CC</th>
-                    <th>Examen Final (Normale)</th>
-                    <th>Moyenne (Normale)</th>
-                    <th>Examen Final (Rattrapage)</th>
-                    <th>Moyenne (Rattrapage)</th>
+                    <th>Examen Final<br>(Normale)</th>
+                    <th>Moyenne<br>(Normale)</th>
+                    <th>Examen Final<br>(Rattrapage)</th>
+                    <th>Moyenne<br>(Rattrapage)</th>
                 </tr>
             </thead>
             <tbody id="table-body">
@@ -112,7 +119,7 @@
         </table>
         <div>
             <button id="ajouter-module" onclick="ajouterModule()">Ajouter un module</button>
-            <button id="supprimer-module" onclick="supprimerDernierModule()">Supprimer le dernier module</button>
+            <button id="supprimer-module" onclick="supprimerDernierModule()">Supprimer un module</button>
         </div>
         <button onclick="calculerMoyenne()">Calculer la Moyenne</button>
         <div id="resultat"></div>
@@ -130,20 +137,20 @@
 
         function ajouterModule() {
             const tableBody = document.getElementById('table-body');
+            const row = document.createElement('tr');
             const moduleIndex = tableBody.children.length + 1;
 
-            const row = document.createElement('tr');
             row.innerHTML = `
                 <td><input type="text" placeholder="Module ${moduleIndex}"></td>
-                <td><input type="number" class="coefficient" value="0" min="0" max="20" onchange="checkCoef(this)"></td>
-                <td><input type="number" class="interro" min="0" max="20" onchange="checkNote(this)"></td>
-                <td><input type="number" class="cc1" min="0" max="20" onchange="checkNote(this)"></td>
-                <td><input type="number" class="cc2" min="0" max="20" onchange="checkNote(this)"></td>
-                <td><input type="number" class="autre" min="0" max="20" onchange="checkNote(this)"></td>
+                <td><input type="number" class="coefficient" value="0" min="0" max="20"></td>
+                <td><input type="number" class="interro" min="0" max="20"></td>
+                <td><input type="number" class="cc1" min="0" max="20"></td>
+                <td><input type="number" class="cc2" min="0" max="20"></td>
+                <td><input type="number" class="autre" min="0" max="20"></td>
                 <td><span class="moyenne-cc">0</span></td>
-                <td><input type="number" class="examen-normale" min="0" max="20" onchange="checkNote(this)"></td>
+                <td><input type="number" class="examen-normale" min="0" max="20"></td>
                 <td><span class="moyenne-normale">0</span></td>
-                <td><input type="number" class="examen-rattrapage" min="0" max="20" onchange="checkNote(this)"></td>
+                <td><input type="number" class="examen-rattrapage" min="0" max="20"></td>
                 <td><span class="moyenne-rattrapage">0</span></td>
             `;
             tableBody.appendChild(row);
@@ -158,44 +165,14 @@
             }
         }
 
-        function checkCoef(input) {
-            let value = parseFloat(input.value);
-            if (isNaN(value) || value < 0) {
-                input.value = 0;
-            } else if (value > 20) {
-                input.value = 20;
-            }
-        }
-
-        function checkNote(input) {
-            let value = parseFloat(input.value);
-            if (isNaN(value) || value < 0) {
-                input.value = 0;
-            } else if (value > 20) {
-                input.value = 20;
-            }
-        }
-
         function calculerMoyenne() {
             const rows = document.querySelectorAll('#table-body tr');
             let totalPoints = 0, totalCoef = 0;
 
             rows.forEach(row => {
                 const coef = parseFloat(row.querySelector('.coefficient').value) || 0;
-                const cc1 = parseFloat(row.querySelector('.cc1').value) || 0;
-                const cc2 = parseFloat(row.querySelector('.cc2').value) || 0;
-                const moyenneCC = ((cc1 + cc2) / 2).toFixed(2);
-                row.querySelector('.moyenne-cc').textContent = moyenneCC;
-
-                const examenNormale = parseFloat(row.querySelector('.examen-normale').value) || moyenneCC;
-                const moyenneNormale = (0.4 * moyenneCC + 0.6 * examenNormale).toFixed(2);
-                row.querySelector('.moyenne-normale').textContent = moyenneNormale;
-
-                const examenRattrapage = parseFloat(row.querySelector('.examen-rattrapage').value) || moyenneNormale;
-                const moyenneRattrapage = (0.4 * moyenneCC + 0.6 * examenRattrapage).toFixed(2);
-                row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage;
-
-                totalPoints += parseFloat(moyenneRattrapage) * coef;
+                const moyenneCC = parseFloat(row.querySelector('.moyenne-cc').textContent) || 0;
+                totalPoints += coef * moyenneCC;
                 totalCoef += coef;
             });
 
