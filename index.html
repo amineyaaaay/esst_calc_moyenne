@@ -94,8 +94,13 @@
             position: fixed;
             bottom: 10px;
             right: 10px;
-            font-size: 12px;
+            font-size: 16px;
             color: #555;
+        }
+
+        .footer-text-container {
+            text-align: right;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -154,12 +159,15 @@
             <button class="btn-supprimer" onclick="supprimerDerniereLigne()">Supprimer le dernier module</button>
         </div>
 
+        <!-- Bouton calculer -->
         <button class="btn-calculer" onclick="calculerMoyenne()">Calculer</button>
 
         <button onclick="retour('choix-semestre')">Retour</button>
     </div>
 
-    <div class="footer-text">Par Dilmi Amine</div>
+    <div class="footer-text-container">
+        <div class="footer-text">Par Dilmi Amine</div>
+    </div>
 
     <script>
         function choisirAnnee(annee) {
@@ -192,7 +200,7 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td><input type="text" value="${module}" readonly></td>
-                    <td><input type="number" class="coefficient" min="0" max="20"></td>
+                    <td><input type="number" class="coefficient" min="0" max="20" value="0"></td>
                     <td><input type="number" class="interro" min="0" max="20"></td>
                     <td><input type="number" class="cc1" min="0" max="20"></td>
                     <td><input type="number" class="cc2" min="0" max="20"></td>
@@ -214,7 +222,7 @@
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td><input type="text" placeholder="Module ${moduleIndex}"></td>
-                <td><input type="number" class="coefficient" min="0" max="20"></td>
+                <td><input type="number" class="coefficient" min="0" max="20" value="0"></td>
                 <td><input type="number" class="interro" min="0" max="20"></td>
                 <td><input type="number" class="cc1" min="0" max="20"></td>
                 <td><input type="number" class="cc2" min="0" max="20"></td>
@@ -248,4 +256,3 @@
     </script>
 </body>
 </html>
-
