@@ -29,6 +29,33 @@
             font-size: 2em;
         }
 
+        .page {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        select, button {
+            padding: 10px 15px;
+            margin: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button {
+            background-color: #FF69B4;
+            color: white;
+            border: none;
+        }
+
+        button:hover {
+            background-color: #FF1493;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -57,22 +84,6 @@
             outline-color: #007BFF;
         }
 
-        button {
-            padding: 10px 20px;
-            margin: 10px;
-            font-size: 16px;
-            background-color: #FF69B4;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #FF1493;
-        }
-
         #resultat {
             font-size: 1.2em;
             font-weight: bold;
@@ -83,33 +94,84 @@
 </head>
 <body>
     <div class="container">
-        <h1>Calcul de la Moyenne</h1>
-        <table id="notesTable">
-            <thead>
-                <tr>
-                    <th>Module</th>
-                    <th>CC</th>
-                    <th>Interro</th>
-                    <th>CC1</th>
-                    <th>CC2</th>
-                    <th>Autre</th>
-                    <th>Moyenne CC</th>
-                    <th>Examen Final<br>Sess. Normale</th>
-                    <th>Moyenne<br>Session Normale</th>
-                    <th>Examen Final<br>Rattrapage</th>
-                    <th>Moyenne<br>Rattrapage</th>
-                </tr>
-            </thead>
-            <tbody id="table-body">
-                <!-- Les lignes pour les modules seront ajoutées ici -->
-            </tbody>
-        </table>
+        <!-- Page 1 : Choix de l'année universitaire -->
+        <div id="page1" class="page active">
+            <h1>Choisissez l'année universitaire</h1>
+            <select id="anneeUniversitaire">
+                <option value="L1">Licence 1</option>
+                <option value="L2">Licence 2</option>
+                <option value="L3">Licence 3</option>
+            </select>
+            <button onclick="passerALaPage(2)">Suivant</button>
+        </div>
 
-        <button onclick="calculerMoyenne()">Calculer la Moyenne</button>
-        <div id="resultat"></div>
+        <!-- Page 2 : Choix de la filière -->
+        <div id="page2" class="page">
+            <h1>Choisissez la filière</h1>
+            <select id="filiere">
+                <option value="MI">Mathématiques et Informatique</option>
+                <option value="ST">Sciences et Technologies</option>
+                <option value="SM">Sciences de la Matière</option>
+                <option value="ECG">Économie et Gestion</option>
+            </select>
+            <button onclick="passerALaPage(3)">Suivant</button>
+        </div>
+
+        <!-- Page 3 : Choix du semestre -->
+        <div id="page3" class="page">
+            <h1>Choisissez le semestre</h1>
+            <select id="semestre">
+                <option value="S1">Semestre 1</option>
+                <option value="S2">Semestre 2</option>
+                <option value="S3">Semestre 3</option>
+                <option value="S4">Semestre 4</option>
+                <option value="S5">Semestre 5</option>
+                <option value="S6">Semestre 6</option>
+            </select>
+            <button onclick="passerALaPage(4)">Suivant</button>
+        </div>
+
+        <!-- Page 4 : Tableau des modules -->
+        <div id="page4" class="page">
+            <h1>Calcul de la Moyenne</h1>
+            <table id="notesTable">
+                <thead>
+                    <tr>
+                        <th>Module</th>
+                        <th>CC</th>
+                        <th>Interro</th>
+                        <th>CC1</th>
+                        <th>CC2</th>
+                        <th>Autre</th>
+                        <th>Moyenne CC</th>
+                        <th>Examen Final<br>Sess. Normale</th>
+                        <th>Moyenne<br>Session Normale</th>
+                        <th>Examen Final<br>Rattrapage</th>
+                        <th>Moyenne<br>Rattrapage</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Les lignes des modules seront ajoutées ici -->
+                </tbody>
+            </table>
+
+            <button onclick="calculerMoyenne()">Calculer la Moyenne</button>
+            <div id="resultat"></div>
+        </div>
     </div>
 
     <script>
+        // Navigation entre les pages
+        function passerALaPage(page) {
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+            document.getElementById('page' + page).classList.add('active');
+
+            // Remplir le tableau automatiquement à la dernière page
+            if (page === 4) {
+                remplirTableau();
+            }
+        }
+
         // Ajouter les modules au tableau
         function remplirTableau() {
             const tableBody = document.getElementById('table-body');
@@ -148,29 +210,22 @@
                 const examenNormal = parseFloat(row.querySelector('.examenNormal').value) || 0;
                 const examenRattrapage = parseFloat(row.querySelector('.examenRattrapage').value) || 0;
 
-                // Calcul de la moyenne CC
                 const moyenneCC = (intero + cc1 + cc2 + autre) / 4;
                 row.querySelector('.moyenneCC').value = moyenneCC.toFixed(2);
 
-                // Calcul de la moyenne Session Normale
                 const moyenneNormale = (moyenneCC * 0.4) + (examenNormal * 0.6);
                 row.querySelector('.moyenneNormale').value = moyenneNormale.toFixed(2);
 
-                // Calcul de la moyenne Session Rattrapage
                 const moyenneRattrapage = (moyenneCC * 0.4) + (examenRattrapage * 0.6);
                 row.querySelector('.moyenneRattrapage').value = moyenneRattrapage.toFixed(2);
 
-                // Ajouter au total pour le calcul global
                 totalPoints += moyenneNormale;
-                totalCoef++; // On suppose un coefficient 1 pour simplifier
+                totalCoef++;
             });
 
             const moyenneGenerale = totalCoef > 0 ? (totalPoints / totalCoef).toFixed(2) : 0;
             document.getElementById('resultat').innerText = `Votre moyenne générale est : ${moyenneGenerale}`;
         }
-
-        // Remplir le tableau au chargement de la page
-        window.onload = remplirTableau;
     </script>
 </body>
 </html>
