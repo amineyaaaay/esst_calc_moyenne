@@ -240,7 +240,7 @@
         function calculerMoyenneGenerale() {
             let totalMoyenneCC = 0;
             let totalMoyenne = 0;
-            let totalModules = 0;
+            let totalMoyenneRattrapage = 0;
             let totalCoefficient = 0;
 
             const rows = document.querySelectorAll('#table-body tr');
@@ -278,11 +278,18 @@
 
                 totalMoyenneCC += moyenneCC * coeff;
                 totalMoyenne += moyenne * coeff;
+                totalMoyenneRattrapage += moyenneRattrapage * coeff;
                 totalCoefficient += coeff;
-                totalModules++;
             });
 
-            const moyenneGenerale = totalCoefficient > 0 ? totalMoyenne / totalCoefficient : 0;
+            let moyenneGenerale;
+            const rattrapageEstSaisi = totalMoyenneRattrapage > 0;
+            if (rattrapageEstSaisi) {
+                moyenneGenerale = (totalMoyenneCC * 0.4 + totalMoyenneRattrapage * 0.6) / totalCoefficient;
+            } else {
+                moyenneGenerale = (totalMoyenneCC * 0.4 + totalMoyenne * 0.6) / totalCoefficient;
+            }
+
             document.getElementById('moyenne-cc-total').textContent = moyenneGenerale.toFixed(2);
         }
 
