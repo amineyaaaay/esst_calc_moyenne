@@ -238,10 +238,8 @@
         }
 
         function calculerMoyenneGenerale() {
-            let totalMoyenneCC = 0;
-            let totalMoyenne = 0;
-            let totalMoyenneRattrapage = 0;
-            let totalCoefficient = 0;
+            let sommeMoyennes = 0;
+            let sommeCoefficients = 0;
 
             const rows = document.querySelectorAll('#table-body tr');
             rows.forEach(row => {
@@ -276,19 +274,11 @@
                 row.querySelector('.moyenne').textContent = moyenne.toFixed(2);
                 row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage.toFixed(2);
 
-                totalMoyenneCC += moyenneCC * coeff;
-                totalMoyenne += moyenne * coeff;
-                totalMoyenneRattrapage += moyenneRattrapage * coeff;
-                totalCoefficient += coeff;
+                sommeMoyennes += (moyenne * coeff);
+                sommeCoefficients += coeff;
             });
 
-            let moyenneGenerale;
-            const rattrapageEstSaisi = totalMoyenneRattrapage > 0;
-            if (rattrapageEstSaisi) {
-                moyenneGenerale = (totalMoyenneCC * 0.4 + totalMoyenneRattrapage * 0.6) / totalCoefficient;
-            } else {
-                moyenneGenerale = (totalMoyenneCC * 0.4 + totalMoyenne * 0.6) / totalCoefficient;
-            }
+            const moyenneGenerale = sommeMoyennes / sommeCoefficients;
 
             document.getElementById('moyenne-cc-total').textContent = moyenneGenerale.toFixed(2);
         }
