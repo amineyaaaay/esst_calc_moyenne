@@ -42,6 +42,18 @@
             background-color: #0056b3;
         }
 
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
         .footer {
             position: fixed;
             bottom: 10px;
@@ -69,6 +81,7 @@
         <button onclick="choisirAnnee('L3')">L3</button>
         <button onclick="choisirAnnee('M1')">M1</button>
         <button onclick="choisirAnnee('M2')">M2</button>
+        <button onclick="retour('choix-filiere')">Retour</button>
     </div>
 
     <div id="choix-semestre" class="container" style="display: none;">
@@ -79,7 +92,7 @@
 
     <div id="calcul-moyenne" class="container" style="display: none;">
         <h1>Calcul de la Moyenne</h1>
-        <table border="1" cellpadding="10" cellspacing="0">
+        <table>
             <thead>
                 <tr>
                     <th>Module</th>
@@ -95,6 +108,7 @@
             </thead>
             <tbody id="table-body"></tbody>
         </table>
+        <button onclick="calculerMoyenne()">Calculer</button>
         <button onclick="retour('choix-semestre')">Retour</button>
     </div>
 
@@ -172,6 +186,11 @@
                 `;
                 tableBody.innerHTML += row;
             });
+        }
+
+        function calculerMoyenne() {
+            // Implémentation de la logique de calcul ici
+            alert("Calcul en cours...");
         }
 
         function afficherSection(sectionId) {
