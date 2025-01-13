@@ -65,6 +65,7 @@
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 5px;
+            max-width: 60px;
         }
 
         input[type="number"]:focus {
@@ -156,15 +157,15 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${module}</td>
-                    <td><input type="number" class="coefficient" value="1"></td>
-                    <td><input type="number" class="interro"></td>
-                    <td><input type="number" class="cc1"></td>
-                    <td><input type="number" class="cc2"></td>
-                    <td><input type="number" class="autre"></td>
+                    <td><input type="number" class="coefficient" value="1" min="0" max="20"></td>
+                    <td><input type="number" class="interro" min="0" max="20"></td>
+                    <td><input type="number" class="cc1" min="0" max="20"></td>
+                    <td><input type="number" class="cc2" min="0" max="20"></td>
+                    <td><input type="number" class="autre" min="0" max="20"></td>
                     <td><span class="moyenne-cc">0</span></td>
-                    <td><input type="number" class="examen-normale"></td>
+                    <td><input type="number" class="examen-normale" min="0" max="20"></td>
                     <td><span class="moyenne-normale">0</span></td>
-                    <td><input type="number" class="examen-rattrapage"></td>
+                    <td><input type="number" class="examen-rattrapage" min="0" max="20"></td>
                     <td><span class="moyenne-rattrapage">0</span></td>
                 `;
                 tableBody.appendChild(row);
