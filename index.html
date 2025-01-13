@@ -84,45 +84,16 @@
             max-width: 60px;
         }
 
-        #resultat {
+        #actions {
             margin-top: 20px;
-            font-size: 1.2em;
-            font-weight: bold;
-            color: green;
+            display: flex;
+            justify-content: center;
         }
     </style>
 </head>
 <body>
-    <!-- Section Choix Année -->
-    <div id="choix-annee" class="container">
-        <h1>Choisissez votre année universitaire</h1>
-        <button onclick="choisirAnnee('L1')">L1</button>
-        <button onclick="choisirAnnee('L2')">L2</button>
-        <button onclick="choisirAnnee('L3')">L3</button>
-        <button onclick="choisirAnnee('M1')">M1</button>
-        <button onclick="choisirAnnee('M2')">M2</button>
-    </div>
-
-    <!-- Section Choix Filière -->
-    <div id="choix-filiere" class="container" style="display: none;">
-        <h1>Choisissez votre filière</h1>
-        <button onclick="choisirFiliere('MI')">MI</button>
-        <button onclick="choisirFiliere('ST')">ST</button>
-        <button onclick="choisirFiliere('SM')">SM</button>
-        <button onclick="choisirFiliere('ECG')">ECG</button>
-        <button onclick="retour('choix-annee')">Retour</button>
-    </div>
-
-    <!-- Section Choix Semestre -->
-    <div id="choix-semestre" class="container" style="display: none;">
-        <h1>Choisissez votre semestre</h1>
-        <button onclick="choisirSemestre('S1')">S1</button>
-        <button onclick="choisirSemestre('S2')">S2</button>
-        <button onclick="retour('choix-filiere')">Retour</button>
-    </div>
-
     <!-- Section Calcul Moyenne -->
-    <div id="calcul-moyenne" class="container" style="display: none;">
+    <div id="calcul-moyenne" class="container">
         <h1>Calcul de la Moyenne</h1>
         <table>
             <thead>
@@ -138,41 +109,30 @@
                     <th>Moyenne (Normale)</th>
                     <th>Examen Final (Rattrapage)</th>
                     <th>Moyenne (Rattrapage)</th>
-                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="table-body">
                 <!-- Modules dynamiques -->
             </tbody>
         </table>
-        <div id="resultat"></div>
-        <button onclick="retour('choix-semestre')">Retour</button>
+
+        <!-- Boutons Ajouter/Supprimer -->
+        <div id="actions">
+            <button class="btn-ajouter" onclick="ajouterModule()">Ajouter un module</button>
+            <button class="btn-supprimer" onclick="supprimerDerniereLigne()">Supprimer le dernier module</button>
+        </div>
     </div>
 
     <script>
         const modulesParDefaut = 6;
 
-        function choisirAnnee(annee) {
-            document.getElementById('choix-annee').style.display = 'none';
-            document.getElementById('choix-filiere').style.display = 'block';
-        }
-
-        function choisirFiliere(filiere) {
-            document.getElementById('choix-filiere').style.display = 'none';
-            document.getElementById('choix-semestre').style.display = 'block';
-        }
-
-        function choisirSemestre(semestre) {
-            document.getElementById('choix-semestre').style.display = 'none';
-            document.getElementById('calcul-moyenne').style.display = 'block';
-
+        // Initialisation des modules par défaut
+        document.addEventListener('DOMContentLoaded', () => {
             const tableBody = document.getElementById('table-body');
-            tableBody.innerHTML = '';
-
             for (let i = 1; i <= modulesParDefaut; i++) {
                 ajouterModule();
             }
-        }
+        });
 
         function ajouterModule() {
             const tableBody = document.getElementById('table-body');
@@ -191,22 +151,17 @@
                 <td><span class="moyenne-normale">0</span></td>
                 <td><input type="number" class="examen-rattrapage" min="0" max="20"></td>
                 <td><span class="moyenne-rattrapage">0</span></td>
-                <td>
-                    <button class="btn-ajouter" onclick="ajouterModule()">Ajouter</button>
-                    <button class="btn-supprimer" onclick="supprimerLigne(this)">Supprimer</button>
-                </td>
             `;
             tableBody.appendChild(row);
         }
 
-        function supprimerLigne(button) {
-            const row = button.closest('tr');
-            row.remove();
-        }
-
-        function retour(section) {
-            document.querySelectorAll('.container').forEach(el => el.style.display = 'none');
-            document.getElementById(section).style.display = 'block';
+        function supprimerDerniereLigne() {
+            const tableBody = document.getElementById('table-body');
+            if (tableBody.children.length > 0) {
+                tableBody.lastChild.remove();
+            } else {
+                alert('Aucune ligne à supprimer.');
+            }
         }
     </script>
 </body>
