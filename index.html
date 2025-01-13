@@ -79,13 +79,13 @@
             margin-top: 20px;
         }
 
-        .filiere-choice {
+        .filiere-choice, .niveau-choice, .sous-niveau-choice {
             display: flex;
             justify-content: center;
-            margin-top: 50px;
+            margin-top: 30px;
         }
 
-        .filiere-choice button {
+        .filiere-choice button, .niveau-choice button, .sous-niveau-choice button {
             width: 150px;
             font-size: 18px;
         }
@@ -96,17 +96,30 @@
     <div id="filiere-selection" class="container">
         <h1>Choisissez votre filière</h1>
         <div class="filiere-choice">
-            <button onclick="choisirFiliere('ST')">ST</button>
-            <button onclick="choisirFiliere('SM')">SM</button>
-            <button onclick="choisirFiliere('MI')">MI</button>
-            <button onclick="choisirFiliere('ECG')">ECG</button>
+            <button onclick="choisirFiliere('L1')">L1</button>
+            <button onclick="choisirFiliere('L2')">L2</button>
+            <button onclick="choisirFiliere('L3')">L3</button>
+            <button onclick="choisirFiliere('M1')">M1</button>
+            <button onclick="choisirFiliere('M2')">M2</button>
         </div>
+    </div>
+
+    <!-- Page de sélection de niveau -->
+    <div id="niveau-selection" class="container" style="display: none;">
+        <h1>Choisissez votre niveau</h1>
+        <div id="niveau-buttons" class="niveau-choice"></div>
+    </div>
+
+    <!-- Page de sélection de sous-niveau -->
+    <div id="sous-niveau-selection" class="container" style="display: none;">
+        <h1>Choisissez votre sous-niveau</h1>
+        <div id="sous-niveau-buttons" class="sous-niveau-choice"></div>
     </div>
 
     <!-- Page de calcul de la moyenne (invisible par défaut) -->
     <div id="calcul-moyenne" class="container" style="display: none;">
         <h1>Calcul de la Moyenne</h1>
-        <p>Bienvenue dans le calcul de la moyenne de la filière <span id="filiere-nom"></span></p>
+        <p>Bienvenue dans le calcul de la moyenne du sous-niveau <span id="sous-niveau-nom"></span></p>
 
         <table id="notesTable">
             <thead>
@@ -120,7 +133,7 @@
                 </tr>
             </thead>
             <tbody id="table-body">
-                <!-- Les lignes du tableau seront ajoutées en fonction de la filière choisie -->
+                <!-- Les lignes du tableau seront ajoutées en fonction du sous-niveau choisi -->
             </tbody>
         </table>
 
@@ -129,29 +142,71 @@
     </div>
 
     <script>
-        // Liste des matières en fonction des filières
+        // Données pour les filières, niveaux et sous-niveaux
         const filieres = {
-            ST: ['Mathématiques', 'Physique', 'Informatique'],
-            SM: ['Mathématiques', 'Biologie', 'Chimie'],
-            MI: ['Mathématiques', 'Informatique', 'Électronique'],
-            ECG: ['Mathématiques', 'Économie', 'Gestion']
+            L1: {S1: ['Mathématiques', 'Physique', 'Informatique'], S2: ['Biologie', 'Chimie']},
+            L2: {S3: ['Mathématiques', 'Physique', 'Chimie'], S4: ['Informatique', 'Biologie']},
+            L3: {S5: ['Mathématiques', 'Informatique', 'Biologie'], S6: ['Chimie', 'Physique']},
+            M1: {S7: ['Mathématiques', 'Informatique', 'Économie'], S8: ['Gestion', 'Électronique']},
+            M2: {S9: ['Informatique', 'Économie', 'Gestion'], S10: ['Mathématiques', 'Électronique']}
         };
 
-        // Fonction pour afficher le tableau correspondant à la filière choisie
+        // Fonction pour afficher le choix de niveau selon la filière choisie
         function choisirFiliere(filiere) {
             // Masquer la page de sélection de filière
             document.getElementById('filiere-selection').style.display = 'none';
-            // Afficher la page de calcul de la moyenne
+            // Afficher la page de sélection de niveau
+            document.getElementById('niveau-selection').style.display = 'block';
+
+            const niveauButtons = document.getElementById('niveau-buttons');
+            niveauButtons.innerHTML = ''; // Vider les boutons précédents
+
+            // Ajouter les boutons de niveau en fonction de la filière
+            if (filiere === 'L1') {
+                niveauButtons.innerHTML = `
+                    <button onclick="choisirSousNiveau('S1')">S1</button>
+                    <button onclick="choisirSousNiveau('S2')">S2</button>
+                `;
+            } else if (filiere === 'L2') {
+                niveauButtons.innerHTML = `
+                    <button onclick="choisirSousNiveau('S3')">S3</button>
+                    <button onclick="choisirSousNiveau('S4')">S4</button>
+                `;
+            } else if (filiere === 'L3') {
+                niveauButtons.innerHTML = `
+                    <button onclick="choisirSousNiveau('S5')">S5</button>
+                    <button onclick="choisirSousNiveau('S6')">S6</button>
+                `;
+            } else if (filiere === 'M1') {
+                niveauButtons.innerHTML = `
+                    <button onclick="choisirSousNiveau('S7')">S7</button>
+                    <button onclick="choisirSousNiveau('S8')">S8</button>
+                `;
+            } else if (filiere === 'M2') {
+                niveauButtons.innerHTML = `
+                    <button onclick="choisirSousNiveau('S9')">S9</button>
+                    <button onclick="choisirSousNiveau('S10')">S10</button>
+                `;
+            }
+        }
+
+        // Fonction pour afficher le choix de sous-niveau en fonction du niveau
+        function choisirSousNiveau(sousNiveau) {
+            // Masquer la page de sélection de niveau
+            document.getElementById('niveau-selection').style.display = 'none';
+            // Afficher la page de sélection de sous-niveau
+            document.getElementById('sous-niveau-selection').style.display = 'none';
             document.getElementById('calcul-moyenne').style.display = 'block';
 
-            // Mettre à jour le nom de la filière sur la page
-            document.getElementById('filiere-nom').innerText = filiere;
+            // Mettre à jour le nom du sous-niveau
+            document.getElementById('sous-niveau-nom').innerText = sousNiveau;
 
-            // Remplir le tableau avec les matières de la filière choisie
+            // Remplir le tableau avec les matières de ce sous-niveau
             const tableBody = document.getElementById('table-body');
             tableBody.innerHTML = ''; // Effacer les anciennes lignes
 
-            filieres[filiere].forEach(matiere => {
+            const matieres = filieres[sousNiveau];
+            matieres.forEach(matiere => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${matiere}</td>
