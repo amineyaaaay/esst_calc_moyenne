@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            background-color: #f0f4f8;
             color: #333;
             margin: 0;
             padding: 0;
@@ -18,30 +18,29 @@
             width: 90%;
             max-width: 800px;
             margin: 30px auto;
-            background-color: #fff;
-            padding: 20px;
+            background-color: white;
+            padding: 30px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            color: #333;
             margin-bottom: 20px;
         }
 
-        button, select {
-            padding: 10px 15px;
-            margin: 10px;
+        button {
+            padding: 10px 20px;
             font-size: 16px;
+            background-color: #007BFF;
+            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            background-color: #FF69B4;
-            color: white;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
-            background-color: #FF1493;
+            background-color: #0056b3;
         }
 
         table {
@@ -58,39 +57,37 @@
 
         th {
             background-color: #f9f9f9;
-            font-weight: bold;
         }
 
         input[type="number"] {
-            width: 100%;
+            width: 80px;
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
 
+        input[type="number"]:focus {
+            outline-color: #007BFF;
+        }
+
         #resultat {
+            margin-top: 20px;
             font-size: 1.2em;
             font-weight: bold;
             color: green;
-            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <!-- Choix de l'année universitaire -->
     <div id="choix-annee" class="container">
         <h1>Choisissez votre année universitaire</h1>
-        <select id="anneeUniversitaire" onchange="mettreAJourSemestres()">
-            <option value="L1">Licence 1 (L1)</option>
-            <option value="L2">Licence 2 (L2)</option>
-            <option value="L3">Licence 3 (L3)</option>
-            <option value="M1">Master 1 (M1)</option>
-            <option value="M2">Master 2 (M2)</option>
-        </select>
-        <button onclick="afficherChoixFiliere()">Suivant</button>
+        <button onclick="choisirAnnee('L1')">L1</button>
+        <button onclick="choisirAnnee('L2')">L2</button>
+        <button onclick="choisirAnnee('L3')">L3</button>
+        <button onclick="choisirAnnee('M1')">M1</button>
+        <button onclick="choisirAnnee('M2')">M2</button>
     </div>
 
-    <!-- Choix de la filière -->
     <div id="choix-filiere" class="container" style="display: none;">
         <h1>Choisissez votre filière</h1>
         <button onclick="choisirFiliere('MI')">MI</button>
@@ -99,17 +96,15 @@
         <button onclick="choisirFiliere('ECG')">ECG</button>
     </div>
 
-    <!-- Choix du semestre -->
     <div id="choix-semestre" class="container" style="display: none;">
         <h1>Choisissez votre semestre</h1>
-        <select id="semestre"></select>
-        <button onclick="afficherTableauNotes()">Valider</button>
+        <button onclick="choisirSemestre('S1')">S1</button>
+        <button onclick="choisirSemestre('S2')">S2</button>
     </div>
 
-    <!-- Tableau pour entrer les notes -->
-    <div id="saisie-notes" class="container" style="display: none;">
-        <h1>Entrez vos notes</h1>
-        <table id="notesTable">
+    <div id="calcul-moyenne" class="container" style="display: none;">
+        <h1>Calcul de la Moyenne</h1>
+        <table>
             <thead>
                 <tr>
                     <th>Module</th>
@@ -118,14 +113,14 @@
                     <th>CC2</th>
                     <th>Autre</th>
                     <th>Moyenne CC</th>
-                    <th>Examen Final Sess. Normale</th>
-                    <th>Moyenne Sess. Normale</th>
-                    <th>Examen Final Sess. Rattrapage</th>
-                    <th>Moyenne Sess. Rattrapage</th>
+                    <th>Examen Final<br>(Normale)</th>
+                    <th>Moyenne<br>(Normale)</th>
+                    <th>Examen Final<br>(Rattrapage)</th>
+                    <th>Moyenne<br>(Rattrapage)</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- Les lignes du tableau seront générées dynamiquement -->
+            <tbody id="table-body">
+                <!-- Lignes dynamiques -->
             </tbody>
         </table>
         <button onclick="calculerMoyenne()">Calculer la Moyenne</button>
@@ -133,84 +128,71 @@
     </div>
 
     <script>
-        // Fonction pour mettre à jour les semestres en fonction de l'année universitaire choisie
-        function mettreAJourSemestres() {
-            const annee = document.getElementById('anneeUniversitaire').value;
-            const semestreSelect = document.getElementById('semestre');
-            semestreSelect.innerHTML = ''; // Vider les options existantes
+        const modules = ['Module 1', 'Module 2', 'Module 3', 'Module 4', 'Module 5', 'Module 6', 'Module 7', 'Module 8', 'Module 9'];
 
-            const semestres = annee === 'L1' ? ['S1', 'S2'] :
-                              annee === 'L2' ? ['S3', 'S4'] :
-                              annee === 'L3' ? ['S5', 'S6'] :
-                              annee === 'M1' ? ['S7', 'S8'] : ['S9', 'S10'];
-
-            semestres.forEach(sem => {
-                const option = document.createElement('option');
-                option.value = sem;
-                option.textContent = sem;
-                semestreSelect.appendChild(option);
-            });
-        }
-
-        // Fonction pour afficher le choix des filières
-        function afficherChoixFiliere() {
+        function choisirAnnee(annee) {
             document.getElementById('choix-annee').style.display = 'none';
             document.getElementById('choix-filiere').style.display = 'block';
         }
 
-        // Fonction pour afficher le choix des semestres
         function choisirFiliere(filiere) {
             document.getElementById('choix-filiere').style.display = 'none';
             document.getElementById('choix-semestre').style.display = 'block';
         }
 
-        // Fonction pour afficher le tableau des notes
-        function afficherTableauNotes() {
+        function choisirSemestre(semestre) {
             document.getElementById('choix-semestre').style.display = 'none';
-            document.getElementById('saisie-notes').style.display = 'block';
+            document.getElementById('calcul-moyenne').style.display = 'block';
 
-            const tableBody = document.querySelector('#notesTable tbody');
-            tableBody.innerHTML = ''; // Effacer les anciennes lignes
+            const tableBody = document.getElementById('table-body');
+            tableBody.innerHTML = '';
 
-            for (let i = 1; i <= 9; i++) {
+            modules.forEach(module => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>Module ${i}</td>
+                    <td>${module}</td>
                     <td><input type="number" class="interro"></td>
                     <td><input type="number" class="cc1"></td>
                     <td><input type="number" class="cc2"></td>
                     <td><input type="number" class="autre"></td>
-                    <td class="moyenne-cc"></td>
+                    <td><span class="moyenne-cc">0</span></td>
                     <td><input type="number" class="examen-normale"></td>
-                    <td class="moyenne-normale"></td>
+                    <td><span class="moyenne-normale">0</span></td>
                     <td><input type="number" class="examen-rattrapage"></td>
-                    <td class="moyenne-rattrapage"></td>
+                    <td><span class="moyenne-rattrapage">0</span></td>
                 `;
                 tableBody.appendChild(row);
-            }
+            });
         }
 
-        // Fonction pour calculer la moyenne
         function calculerMoyenne() {
-            const rows = document.querySelectorAll('#notesTable tbody tr');
+            const rows = document.querySelectorAll('#table-body tr');
+            let totalPoints = 0, totalCoef = 0;
+
             rows.forEach(row => {
                 const interro = parseFloat(row.querySelector('.interro').value) || 0;
                 const cc1 = parseFloat(row.querySelector('.cc1').value) || 0;
                 const cc2 = parseFloat(row.querySelector('.cc2').value) || 0;
                 const autre = parseFloat(row.querySelector('.autre').value) || 0;
+                const examenNormale = parseFloat(row.querySelector('.examen-normale').value) || 0;
+                const examenRattrapage = parseFloat(row.querySelector('.examen-rattrapage').value) || 0;
 
                 const moyenneCC = ((interro + cc1 + cc2 + autre) / 4).toFixed(2);
                 row.querySelector('.moyenne-cc').textContent = moyenneCC;
 
-                const examenNormale = parseFloat(row.querySelector('.examen-normale').value) || 0;
-                const moyenneNormale = ((parseFloat(moyenneCC) * 0.4) + (examenNormale * 0.6)).toFixed(2);
+                const moyenneNormale = (0.4 * moyenneCC + 0.6 * examenNormale).toFixed(2);
                 row.querySelector('.moyenne-normale').textContent = moyenneNormale;
 
-                const examenRattrapage = parseFloat(row.querySelector('.examen-rattrapage').value) || 0;
-                const moyenneRattrapage = ((parseFloat(moyenneCC) * 0.4) + (examenRattrapage * 0.6)).toFixed(2);
+                const moyenneRattrapage = (0.4 * moyenneCC + 0.6 * examenRattrapage).toFixed(2);
                 row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage;
+
+                totalPoints += parseFloat(moyenneNormale) || 0;
+                totalCoef += 1;
             });
 
-            document.getElementById('resultat').textContent = 'Les moyennes ont été calculées.';
+            const moyenneGenerale = (totalPoints / totalCoef).toFixed(2);
+            document.getElementById('resultat').textContent = `Votre moyenne générale est : ${moyenneGenerale}`;
         }
-   
+    </script>
+</body>
+</html>
