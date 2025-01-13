@@ -185,9 +185,10 @@
                 const examenNormale = parseFloat(row.querySelector('.examen-normale').value) || null;
                 const examenRattrapage = parseFloat(row.querySelector('.examen-rattrapage').value) || null;
 
-                const moyenneCC = interro !== null || autre !== null 
-                    ? ((cc1 + cc2 + (interro || 0) + (autre || 0)) / (4 - (interro === null ? 1 : 0) - (autre === null ? 1 : 0))).toFixed(2)
-                    : ((cc1 + cc2) / 2).toFixed(2);
+                // Calcul de la moyenne CC (en excluant les cases vides)
+                const moyenneCC = (cc1 || cc2 || interro || autre) 
+                    ? ((cc1 + cc2 + (interro || 0) + (autre || 0)) / (4 - (interro === null ? 1 : 0) - (autre === null ? 1 : 0))).toFixed(2) 
+                    : 0;
                 row.querySelector('.moyenne-cc').textContent = moyenneCC;
 
                 const moyenneNormale = examenNormale !== null ? (0.4 * moyenneCC + 0.6 * examenNormale).toFixed(2) : moyenneCC;
@@ -196,7 +197,7 @@
                 const moyenneRattrapage = examenRattrapage !== null ? (0.4 * moyenneCC + 0.6 * examenRattrapage).toFixed(2) : null;
                 if (moyenneRattrapage !== null) row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage;
 
-                // Si aucune note n'est remplie pour ce module, le coefficient est 0
+                // Le coefficient est 0 si aucune note n'est renseignée
                 const moyenneModule = (coef > 0 && (moyenneNormale || moyenneRattrapage)) 
                     ? (moyenneRattrapage !== null ? parseFloat(moyenneRattrapage) : parseFloat(moyenneNormale)) 
                     : 0;
