@@ -6,7 +6,7 @@
     <title>Calculateur de Moyenne</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             background-color: #f0f4f8;
             color: #333;
             margin: 0;
@@ -15,8 +15,8 @@
         }
 
         .container {
-            width: 95%;
-            max-width: 1200px;
+            width: 90%;
+            max-width: 1000px;
             margin: 30px auto;
             background-color: white;
             padding: 30px;
@@ -25,23 +25,24 @@
         }
 
         h1 {
-            margin-bottom: 20px;
+            color: #333;
+            font-size: 2em;
         }
 
         button {
             padding: 10px 20px;
+            margin: 10px;
             font-size: 16px;
-            background-color: #007BFF;
+            background-color: #FF69B4;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            margin: 10px;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #FF1493;
         }
 
         table {
@@ -58,10 +59,11 @@
 
         th {
             background-color: #f9f9f9;
+            font-weight: bold;
         }
 
         input[type="number"] {
-            width: 80px;
+            width: 80%;
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -72,141 +74,240 @@
         }
 
         #resultat {
-            margin-top: 20px;
             font-size: 1.2em;
             font-weight: bold;
-            color: green;
+            margin-top: 20px;
+        }
+
+        .filiere-choice, .niveau-choice, .sous-niveau-choice {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .filiere-choice button, .niveau-choice button, .sous-niveau-choice button {
+            width: 150px;
+            font-size: 18px;
+        }
+
+        /* Media queries pour les petits écrans (téléphones) */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .container {
+                padding: 20px;
+                margin: 15px auto;
+                width: 100%;
+            }
+
+            .filiere-choice button, .niveau-choice button, .sous-niveau-choice button {
+                width: 120px;
+                font-size: 14px;
+            }
+
+            table, input[type="number"] {
+                font-size: 14px;
+            }
+        }
+
+        /* Media queries pour les très petits écrans (petits téléphones) */
+        @media (max-width: 480px) {
+            button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+
+            .container {
+                padding: 15px;
+                margin: 10px auto;
+            }
+
+            .filiere-choice, .niveau-choice, .sous-niveau-choice {
+                flex-direction: column;
+            }
+
+            .filiere-choice button, .niveau-choice button, .sous-niveau-choice button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="choix-annee" class="container">
-        <h1>Choisissez votre année universitaire</h1>
-        <button onclick="choisirAnnee('L1')">L1</button>
-        <button onclick="choisirAnnee('L2')">L2</button>
-        <button onclick="choisirAnnee('L3')">L3</button>
-        <button onclick="choisirAnnee('M1')">M1</button>
-        <button onclick="choisirAnnee('M2')">M2</button>
-    </div>
 
-    <div id="choix-filiere" class="container" style="display: none;">
+    <!-- Page de sélection de filière -->
+    <div id="filiere-selection" class="container">
         <h1>Choisissez votre filière</h1>
-        <button onclick="choisirFiliere('MI')">MI</button>
-        <button onclick="choisirFiliere('ST')">ST</button>
-        <button onclick="choisirFiliere('SM')">SM</button>
-        <button onclick="choisirFiliere('ECG')">ECG</button>
-        <button onclick="retour('choix-annee')">Retour</button>
+        <div class="filiere-choice">
+            <button onclick="choisirFiliere('L1')">L1</button>
+            <button onclick="choisirFiliere('L2')">L2</button>
+            <button onclick="choisirFiliere('L3')">L3</button>
+            <button onclick="choisirFiliere('M1')">M1</button>
+            <button onclick="choisirFiliere('M2')">M2</button>
+        </div>
     </div>
 
-    <div id="choix-semestre" class="container" style="display: none;">
-        <h1>Choisissez votre semestre</h1>
-        <button onclick="choisirSemestre('S1')">S1</button>
-        <button onclick="choisirSemestre('S2')">S2</button>
-        <button onclick="retour('choix-filiere')">Retour</button>
+    <!-- Page de sélection de niveau -->
+    <div id="niveau-selection" class="container" style="display: none;">
+        <h1>Choisissez votre niveau</h1>
+        <div id="niveau-buttons" class="niveau-choice"></div>
     </div>
 
+    <!-- Page de sélection de sous-niveau -->
+    <div id="sous-niveau-selection" class="container" style="display: none;">
+        <h1>Choisissez votre sous-niveau</h1>
+        <div id="sous-niveau-buttons" class="sous-niveau-choice"></div>
+    </div>
+
+    <!-- Page de calcul de la moyenne -->
     <div id="calcul-moyenne" class="container" style="display: none;">
         <h1>Calcul de la Moyenne</h1>
-        <table>
+        <p>Bienvenue dans le calcul de la moyenne du sous-niveau <span id="sous-niveau-nom"></span></p>
+
+        <table id="notesTable">
             <thead>
                 <tr>
-                    <th>Module</th>
-                    <th>Coefficient</th>
-                    <th>Interro</th>
-                    <th>CC1</th>
-                    <th>CC2</th>
-                    <th>Autre</th>
-                    <th>Moyenne CC</th>
-                    <th>Examen Final<br>(Normale)</th>
-                    <th>Moyenne<br>(Normale)</th>
-                    <th>Examen Final<br>(Rattrapage)</th>
-                    <th>Moyenne<br>(Rattrapage)</th>
+                    <th>Modules</th>
+                    <th>CC (Interro, CC1, CC2, Autre)</th>
+                    <th>Examen Final (Session Normale)</th>
+                    <th>Moyenne Session Normale</th>
+                    <th>Examen Final (Session Rattrapage)</th>
+                    <th>Moyenne Session Rattrapage</th>
+                    <th>Coef</th>
                 </tr>
             </thead>
             <tbody id="table-body">
-                <!-- Lignes dynamiques -->
+                <!-- Les lignes du tableau seront ajoutées en fonction du sous-niveau choisi -->
             </tbody>
         </table>
+
         <button onclick="calculerMoyenne()">Calculer la Moyenne</button>
         <div id="resultat"></div>
-        <button onclick="retour('choix-semestre')">Retour</button>
+
+        <button onclick="revenir()">Retour</button>
     </div>
 
     <script>
-        const modules = ['Module 1', 'Module 2', 'Module 3', 'Module 4', 'Module 5', 'Module 6', 'Module 7', 'Module 8', 'Module 9'];
+        // Données pour les filières, niveaux et sous-niveaux
+        const filieres = {
+            L1: {S1: ['Mathématiques', 'Physique', 'Informatique'], S2: ['Biologie', 'Chimie']},
+            L2: {S3: ['Mathématiques', 'Physique', 'Chimie'], S4: ['Informatique', 'Biologie']},
+            L3: {S5: ['Mathématiques', 'Informatique', 'Biologie'], S6: ['Chimie', 'Physique']},
+            M1: {S7: ['Mathématiques', 'Informatique', 'Économie'], S8: ['Gestion', 'Électronique']},
+            M2: {S9: ['Informatique', 'Économie', 'Gestion'], S10: ['Mathématiques', 'Électronique']}
+        };
 
-        function choisirAnnee(annee) {
-            document.getElementById('choix-annee').style.display = 'none';
-            document.getElementById('choix-filiere').style.display = 'block';
-        }
-
+        // Fonction pour afficher le choix de niveau selon la filière choisie
         function choisirFiliere(filiere) {
-            document.getElementById('choix-filiere').style.display = 'none';
-            document.getElementById('choix-semestre').style.display = 'block';
+            document.getElementById('filiere-selection').style.display = 'none';
+            document.getElementById('niveau-selection').style.display = 'block';
+
+            const niveauButtons = document.getElementById('niveau-buttons');
+            niveauButtons.innerHTML = ''; // Vider les boutons précédents
+
+            if (filiere === 'L1') {
+                niveauButtons.innerHTML = `
+                    <button onclick="choisirSousNiveau('S1')">S1</button>
+                    <button onclick="choisirSousNiveau('S2')">S2</button>
+                `;
+            } else if (filiere === 'L2') {
+                niveauButtons.innerHTML = `
+                    <button onclick="choisirSousNiveau('S3')">S3</button>
+                    <button onclick="choisirSousNiveau('S4')">S4</button>
+                `;
+            } else if (filiere === 'L3') {
+                niveauButtons.innerHTML = `
+                    <button onclick="choisirSousNiveau('S5')">S5</button>
+                    <button onclick="choisirSousNiveau('S6')">S6</button>
+                `;
+            } else if (filiere === 'M1') {
+                niveauButtons.innerHTML = `
+                    <button onclick="choisirSousNiveau('S7')">S7</button>
+                    <button onclick="choisirSousNiveau('S8')">S8</button>
+                `;
+            } else if (filiere === 'M2') {
+                niveauButtons.innerHTML = `
+                    <button onclick="choisirSousNiveau('S9')">S9</button>
+                    <button onclick="choisirSousNiveau('S10')">S10</button>
+                `;
+            }
         }
 
-        function choisirSemestre(semestre) {
-            document.getElementById('choix-semestre').style.display = 'none';
+        // Fonction pour afficher le choix de sous-niveau en fonction du niveau
+        function choisirSousNiveau(sousNiveau) {
+            document.getElementById('niveau-selection').style.display = 'none';
+            document.getElementById('sous-niveau-selection').style.display = 'none';
             document.getElementById('calcul-moyenne').style.display = 'block';
+
+            document.getElementById('sous-niveau-nom').innerText = sousNiveau;
 
             const tableBody = document.getElementById('table-body');
             tableBody.innerHTML = '';
 
-            modules.forEach(module => {
+            const matieres = filieres[sousNiveau];
+            matieres.forEach(matiere => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${module}</td>
-                    <td><input type="number" class="coefficient" value="1"></td>
-                    <td><input type="number" class="interro"></td>
-                    <td><input type="number" class="cc1"></td>
-                    <td><input type="number" class="cc2"></td>
-                    <td><input type="number" class="autre"></td>
-                    <td><span class="moyenne-cc">0</span></td>
-                    <td><input type="number" class="examen-normale"></td>
-                    <td><span class="moyenne-normale">0</span></td>
-                    <td><input type="number" class="examen-rattrapage"></td>
-                    <td><span class="moyenne-rattrapage">0</span></td>
+                    <td>${matiere}</td>
+                    <td><input class="intero" type="number" placeholder="Intero" /></td>
+                    <td><input class="cc1" type="number" placeholder="CC1" /></td>
+                    <td><input class="cc2" type="number" placeholder="CC2" /></td>
+                    <td><input class="autre" type="number" placeholder="Autre" /></td>
+                    <td><input class="examen-normal" type="number" placeholder="Examen Normal" /></td>
+                    <td><input class="examen-rattrapage" type="number" placeholder="Examen Rattrapage" /></td>
+                    <td><input class="coef" type="number" placeholder="Coefficient" /></td>
                 `;
                 tableBody.appendChild(row);
             });
         }
 
+        // Fonction pour calculer la moyenne générale
         function calculerMoyenne() {
-            const rows = document.querySelectorAll('#table-body tr');
-            let totalPoints = 0, totalCoef = 0;
+            const rows = document.querySelectorAll('#notesTable tr');
+            let totalPoints = 0;
+            let totalCoef = 0;
+            let valid = true;
 
             rows.forEach(row => {
-                const coef = parseFloat(row.querySelector('.coefficient').value) || 1;
-                const interro = parseFloat(row.querySelector('.interro').value) || null;
+                const intero = parseFloat(row.querySelector('.intero').value) || 0;
                 const cc1 = parseFloat(row.querySelector('.cc1').value) || 0;
                 const cc2 = parseFloat(row.querySelector('.cc2').value) || 0;
-                const autre = parseFloat(row.querySelector('.autre').value) || null;
-                const examenNormale = parseFloat(row.querySelector('.examen-normale').value) || null;
-                const examenRattrapage = parseFloat(row.querySelector('.examen-rattrapage').value) || null;
+                const autre = parseFloat(row.querySelector('.autre').value) || 0;
+                const examenNormal = parseFloat(row.querySelector('.examen-normal').value) || 0;
+                const examenRattrapage = parseFloat(row.querySelector('.examen-rattrapage').value) || 0;
+                const coef = parseFloat(row.querySelector('.coef').value) || 0;
 
-                const moyenneCC = interro !== null || autre !== null 
-                    ? ((cc1 + cc2 + (interro || 0) + (autre || 0)) / (4 - (interro === null ? 1 : 0) - (autre === null ? 1 : 0))).toFixed(2)
-                    : ((cc1 + cc2) / 2).toFixed(2);
-                row.querySelector('.moyenne-cc').textContent = moyenneCC;
+                if ((cc1 + cc2 + examenNormal + examenRattrapage + intero + autre) === 0 || coef === 0) {
+                    return; // Ignorer ce module si aucun champ n'est rempli
+                }
 
-                const moyenneNormale = examenNormale !== null ? (0.4 * moyenneCC + 0.6 * examenNormale).toFixed(2) : moyenneCC;
-                row.querySelector('.moyenne-normale').textContent = moyenneNormale;
+                // Calcul de la moyenne CC et examen normal
+                const moyenneCC = ((cc1 + cc2) / 2) * 0.4;
+                const moyenneExamen = examenNormal * 0.6;
 
-                const moyenneRattrapage = examenRattrapage !== null ? (0.4 * moyenneCC + 0.6 * examenRattrapage).toFixed(2) : null;
-                if (moyenneRattrapage !== null) row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage;
+                const moyenneMatiere = moyenneCC + moyenneExamen;
 
-                const moyenneModule = moyenneRattrapage !== null ? parseFloat(moyenneRattrapage) : parseFloat(moyenneNormale);
-                totalPoints += moyenneModule * coef;
+                totalPoints += moyenneMatiere * coef;
                 totalCoef += coef;
             });
 
+            if (totalCoef === 0) {
+                alert('Veuillez remplir au moins un module avec des notes.');
+                return;
+            }
+
             const moyenneGenerale = (totalPoints / totalCoef).toFixed(2);
-            document.getElementById('resultat').textContent = `Votre moyenne générale est : ${moyenneGenerale}`;
+            document.getElementById('resultat').innerText = `Votre moyenne générale est : ${moyenneGenerale}`;
+            document.getElementById('resultat').style.color = 'green'; // Changer la couleur du texte en vert
         }
 
-        function retour(section) {
-            document.querySelectorAll('.container').forEach(el => el.style.display = 'none');
-            document.getElementById(section).style.display = 'block';
+        // Fonction pour revenir à la page précédente
+        function revenir() {
+            document.getElementById('calcul-moyenne').style.display = 'none';
+            document.getElementById('niveau-selection').style.display = 'none';
+            document.getElementById('filiere-selection').style.display = 'block';
         }
     </script>
 </body>
