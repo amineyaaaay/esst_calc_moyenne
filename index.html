@@ -80,6 +80,11 @@
             font-size: 14px;
             color: #555;
         }
+
+        .moyenne-total {
+            margin-top: 20px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -121,6 +126,7 @@
         <button class="btn-supprimer" onclick="supprimerDerniereLigne()">Supprimer le dernier module</button>
         <button onclick="retour('choix-semestre')">Retour</button>
         <div id="signature">Par Dilmi Amine</div>
+        <div id="moyenne-generale" class="moyenne-total">Moyenne Générale: <span id="moyenne-cc-total">0</span></div>
     </div>
 
     <script>
@@ -178,40 +184,46 @@
 
             modules.forEach(module => {
                 const row = document.createElement('tr');
-                row.innerHTML = `
+                row.innerHTML = ` 
                     <td>${module}</td>
-                    <td><input type="number" value="0" min="0" max="20"></td>
-                    <td><input type="number" min="0" max="20"></td>
-                    <td><input type="number" min="0" max="20"></td>
-                    <td><input type="number" min="0" max="20"></td>
-                    <td><input type="number" min="0" max="20"></td>
-                    <td>0</td>
-                    <td><input type="number" min="0" max="20"></td>
-                    <td>0</td>
-                    <td><input type="number" min="0" max="20"></td>
-                    <td>0</td>
+                    <td><input type="number" value="0" min="0" max="20" class="coefficient"></td>
+                    <td><input type="number" min="0" max="20" class="interro"></td>
+                    <td><input type="number" min="0" max="20" class="cc1"></td>
+                    <td><input type="number" min="0" max="20" class="cc2"></td>
+                    <td><input type="number" min="0" max="20" class="autre"></td>
+                    <td class="moyenne-cc">0</td>
+                    <td><input type="number" min="0" max="20" class="examen"></td>
+                    <td class="moyenne">0</td>
+                    <td><input type="number" min="0" max="20" class="rattrapage"></td>
+                    <td class="moyenne-rattrapage">0</td>
                 `;
                 tableBody.appendChild(row);
             });
+
+            // Recalculate the averages after the table is loaded
+            calculerMoyenneGenerale();
         }
 
         function ajouterModule() {
             const tableBody = document.getElementById('table-body');
             const row = document.createElement('tr');
-            row.innerHTML = `
+            row.innerHTML = ` 
                 <td><input type="text" placeholder="Nouveau module"></td>
-                <td><input type="number" value="0" min="0" max="20"></td>
-                <td><input type="number" min="0" max="20"></td>
-                <td><input type="number" min="0" max="20"></td>
-                <td><input type="number" min="0" max="20"></td>
-                <td><input type="number" min="0" max="20"></td>
-                <td>0</td>
-                <td><input type="number" min="0" max="20"></td>
-                <td>0</td>
-                <td><input type="number" min="0" max="20"></td>
-                <td>0</td>
+                <td><input type="number" value="0" min="0" max="20" class="coefficient"></td>
+                <td><input type="number" min="0" max="20" class="interro"></td>
+                <td><input type="number" min="0" max="20" class="cc1"></td>
+                <td><input type="number" min="0" max="20" class="cc2"></td>
+                <td><input type="number" min="0" max="20" class="autre"></td>
+                <td class="moyenne-cc">0</td>
+                <td><input type="number" min="0" max="20" class="examen"></td>
+                <td class="moyenne">0</td>
+                <td><input type="number" min="0" max="20" class="rattrapage"></td>
+                <td class="moyenne-rattrapage">0</td>
             `;
             tableBody.appendChild(row);
+
+            // Recalculate the averages after a new module is added
+            calculerMoyenneGenerale();
         }
 
         function supprimerDerniereLigne() {
@@ -219,6 +231,41 @@
             if (tableBody.lastChild) {
                 tableBody.removeChild(tableBody.lastChild);
             }
+
+            // Recalculate the averages after a row is deleted
+            calculerMoyenneGenerale();
+        }
+
+        function calculerMoyenneGenerale() {
+            let totalMoyenneCC = 0;
+            let totalMoyenne = 0;
+            let totalModules = 0;
+
+            const rows = document.querySelectorAll('#table-body tr');
+            rows.forEach(row => {
+                const coeff = parseFloat(row.querySelector('.coefficient').value);
+                const interro = parseFloat(row.querySelector('.interro').value);
+                const cc1 = parseFloat(row.querySelector('.cc1').value);
+                const cc2 = parseFloat(row.querySelector('.cc2').value);
+                const autre = parseFloat(row.querySelector('.autre').value);
+                const examen = parseFloat(row.querySelector('.examen').value);
+                const rattrapage = parseFloat(row.querySelector('.rattrapage').value);
+
+                const moyenneCC = (interro + cc1 + cc2 + autre) / 4;
+                const moyenne = (moyenneCC * coeff + examen) / (coeff + 1);
+                const moyenneRattrapage = (moyenneCC * coeff + rattrapage) / (coeff + 1);
+
+                row.querySelector('.moyenne-cc').textContent = moyenneCC.toFixed(2);
+                row.querySelector('.moyenne').textContent = moyenne.toFixed(2);
+                row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage.toFixed(2);
+
+                totalMoyenneCC += moyenneCC;
+                totalMoyenne += moyenne;
+                totalModules++;
+            });
+
+            const moyenneGenerale = totalModules > 0 ? totalMoyenne / totalModules : 0;
+            document.getElementById('moyenne-cc-total').textContent = moyenneGenerale.toFixed(2);
         }
 
         function retour(section) {
