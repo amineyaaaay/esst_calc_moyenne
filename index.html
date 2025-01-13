@@ -237,52 +237,56 @@
             calculerMoyenneGenerale();
         }
 
-        function calculerMoyenneGenerale() {
-            let sommeMoyennes = 0;
-            let sommeCoefficients = 0;
+function calculerMoyenneGenerale() {
+    let sommeMoyennes = 0;
+    let sommeCoefficients = 0;
 
-            const rows = document.querySelectorAll('#table-body tr');
-            rows.forEach(row => {
-                const coeff = parseFloat(row.querySelector('.coefficient').value);
-                if (coeff === 0) return;  // Skip the module if its coefficient is 0
+    const rows = document.querySelectorAll('#table-body tr');
+    rows.forEach(row => {
+        const coeff = parseFloat(row.querySelector('.coefficient').value);
+        if (coeff === 0) return;
 
-                const interro = parseFloat(row.querySelector('.interro').value);
-                const cc1 = parseFloat(row.querySelector('.cc1').value);
-                const cc2 = parseFloat(row.querySelector('.cc2').value);
-                const autre = parseFloat(row.querySelector('.autre').value);
-                const examen = parseFloat(row.querySelector('.examen').value);
-                const rattrapage = parseFloat(row.querySelector('.rattrapage').value);
+        const interro = parseFloat(row.querySelector('.interro').value);
+        const cc1 = parseFloat(row.querySelector('.cc1').value);
+        const cc2 = parseFloat(row.querySelector('.cc2').value);
+        const autre = parseFloat(row.querySelector('.autre').value);
+        const examen = parseFloat(row.querySelector('.examen').value);
+        const rattrapage = parseFloat(row.querySelector('.rattrapage').value);
 
-                // Calculate Moyenne CC based on the conditions provided
-                let moyenneCC;
-                if (isNaN(interro) && isNaN(autre)) {
-                    moyenneCC = (cc1 + cc2) / 2;
-                } else if (isNaN(autre)) {
-                    moyenneCC = (interro + (cc1 * 2) + (cc2 * 2)) / 5;
-                } else if (isNaN(interro)) {
-                    moyenneCC = (autre + (cc1 * 2) + (cc2 * 2)) / 5;
-                } else {
-                    moyenneCC = (interro + (cc1 * 2) + (cc2 * 2) + autre) / 6;
-                }
-
-                // Calculate Moyenne and Moyenne Rattrapage
-                const moyenne = (moyenneCC * 0.4 + examen*0.6);
-                const moyenneRattrapage = (moyenneCC * 0.4 + rattrapage*0.6)
-
-                // Update the table with calculated values
-                row.querySelector('.moyenne-cc').textContent = moyenneCC.toFixed(2);
-                row.querySelector('.moyenne').textContent = moyenne.toFixed(2);
-                row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage.toFixed(2);
-
-                sommeMoyennes += (moyenne * coeff);
-                sommeCoefficients += coeff;
-            });
-
-            const moyenneGenerale = sommeMoyennes / sommeCoefficients;
-
-            document.getElementById('moyenne-cc-total').textContent = moyenneGenerale.toFixed(2);
+        let moyenneCC;
+        if (isNaN(interro) && isNaN(autre)) {
+            moyenneCC = (cc1 + cc2) / 2;
+        } else if (isNaN(autre)) {
+            moyenneCC = (interro + (cc1 * 2) + (cc2 * 2)) / 5;
+        } else if (isNaN(interro)) {
+            moyenneCC = (autre + (cc1 * 2) + (cc2 * 2)) / 5;
+        } else {
+            moyenneCC = (interro + (cc1 * 2) + (cc2 * 2) + autre) / 6;
         }
 
+        // Calcul de la moyenne normale
+        const moyenne = (moyenneCC * 0.4 + examen * 0.6);
+        
+        // Calcul de la moyenne de rattrapage
+        const moyenneRattrapage = (moyenneCC * 0.4 + rattrapage * 0.6);
+
+        // Affichage des moyennes CC, normale et de rattrapage
+        row.querySelector('.moyenne-cc').textContent = moyenneCC.toFixed(2);
+        row.querySelector('.moyenne').textContent = moyenne.toFixed(2);
+        row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage.toFixed(2);
+
+        // On choisit la moyenne de rattrapage si un rattrapage est saisi, sinon on utilise la moyenne normale
+        const moyenneModule = isNaN(rattrapage) ? moyenne : moyenneRattrapage;
+
+        // Ajout de la moyenne pondérée dans la somme des moyennes
+        sommeMoyennes += (moyenneModule * coeff);
+        sommeCoefficients += coeff;
+    });
+
+    // Calcul de la moyenne générale
+    const moyenneGenerale = sommeMoyennes / sommeCoefficients;
+    document.getElementById('moyenne-cc-total').textContent = moyenneGenerale.toFixed(2);
+}
         function retour(section) {
             document.querySelectorAll('.container').forEach(el => el.style.display = 'none');
             document.getElementById(section).style.display = 'block';
