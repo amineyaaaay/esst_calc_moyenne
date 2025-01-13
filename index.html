@@ -266,8 +266,8 @@
                 }
 
                 // Calculate Moyenne and Moyenne Rattrapage
-                const moyenne = (moyenneCC * coeff + examen) / (coeff + 1);
-                const moyenneRattrapage = (moyenneCC * coeff + rattrapage) / (coeff + 1);
+                const moyenne = (moyenneCC * 0.4 + examen*0.6);
+                const moyenneRattrapage = (moyenneCC * 0.4 + rattrapage*0.6)
 
                 // Update the table with calculated values
                 row.querySelector('.moyenne-cc').textContent = moyenneCC.toFixed(2);
