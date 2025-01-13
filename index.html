@@ -150,8 +150,6 @@
     </div>
 
     <script>
-        const modulesParDefaut = 6;
-
         function choisirAnnee(annee) {
             document.getElementById('choix-annee').style.display = 'none';
             document.getElementById('choix-filiere').style.display = 'block';
@@ -168,9 +166,33 @@
 
             const tableBody = document.getElementById('table-body');
             tableBody.innerHTML = '';
-            for (let i = 1; i <= modulesParDefaut; i++) {
-                ajouterModule();
+
+            if (semestre === 'S1') {
+                remplirModules([
+                    "Analyse", "Algèbre", "ASD", "Structure machine", "Anglais", "Physique", "Projet"
+                ]);
             }
+        }
+
+        function remplirModules(modules) {
+            const tableBody = document.getElementById('table-body');
+            modules.forEach(module => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="text" value="${module}" readonly></td>
+                    <td><input type="number" class="coefficient" min="0" max="20"></td>
+                    <td><input type="number" class="interro" min="0" max="20"></td>
+                    <td><input type="number" class="cc1" min="0" max="20"></td>
+                    <td><input type="number" class="cc2" min="0" max="20"></td>
+                    <td><input type="number" class="autre" min="0" max="20"></td>
+                    <td><span class="moyenne-cc">0</span></td>
+                    <td><input type="number" class="examen-normale" min="0" max="20"></td>
+                    <td><span class="moyenne-normale">0</span></td>
+                    <td><input type="number" class="examen-rattrapage" min="0" max="20"></td>
+                    <td><span class="moyenne-rattrapage">0</span></td>
+                `;
+                tableBody.appendChild(row);
+            });
         }
 
         function ajouterModule() {
