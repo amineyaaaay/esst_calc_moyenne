@@ -42,31 +42,14 @@
             opacity: 0.9;
         }
 
-        .btn-retour {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .btn-retour:hover {
-            background-color: #0056b3;
-        }
-
         .btn-ajouter {
             background-color: #28a745;
             color: white;
         }
 
-        .btn-ajouter:hover {
-            background-color: #218838;
-        }
-
         .btn-supprimer {
             background-color: #dc3545;
             color: white;
-        }
-
-        .btn-supprimer:hover {
-            background-color: #c82333;
         }
 
         table {
@@ -90,24 +73,16 @@
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            max-width: 60px;
         }
 
-        #actions {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .signature {
+        #signature {
             margin-top: 20px;
             font-size: 14px;
-            color: #666;
+            color: #555;
         }
     </style>
 </head>
 <body>
-    <!-- Page de choix de filière -->
     <div id="choix-filiere" class="container">
         <h1>Choisissez votre filière</h1>
         <button onclick="choisirFiliere('MI')">MI</button>
@@ -116,21 +91,14 @@
         <button onclick="choisirFiliere('ECG')">ECG</button>
     </div>
 
-    <!-- Page de choix de semestre -->
     <div id="choix-semestre" class="container" style="display: none;">
         <h1>Choisissez votre semestre</h1>
-        <button onclick="choisirSemestre('S1')">S1</button>
-        <button onclick="choisirSemestre('S2')">S2</button>
-        <button onclick="choisirSemestre('S3')">S3</button>
-        <button onclick="choisirSemestre('S4')">S4</button>
-        <button onclick="choisirSemestre('S5')">S5</button>
-        <button onclick="choisirSemestre('S6')">S6</button>
-        <button onclick="retour('choix-filiere')" class="btn-retour">Retour</button>
+        <div id="semestres"></div>
+        <button onclick="retour('choix-filiere')">Retour</button>
     </div>
 
-    <!-- Page tableau -->
     <div id="tableau-modules" class="container" style="display: none;">
-        <h1>Remplissez les modules</h1>
+        <h1>Tableau des Modules</h1>
         <table>
             <thead>
                 <tr>
@@ -143,76 +111,113 @@
                     <th>Moyenne CC</th>
                     <th>Examen</th>
                     <th>Moyenne</th>
+                    <th>Examen Rattrapage</th>
+                    <th>Moyenne Rattrapage</th>
                 </tr>
             </thead>
-            <tbody id="table-body">
-                <!-- Lignes dynamiques -->
-            </tbody>
+            <tbody id="table-body"></tbody>
         </table>
-
-        <!-- Boutons Ajouter/Supprimer -->
-        <div id="actions">
-            <button class="btn-ajouter" onclick="ajouterModule()">Ajouter un module</button>
-            <button class="btn-supprimer" onclick="supprimerDerniereLigne()">Supprimer le dernier module</button>
-        </div>
-
-        <button onclick="retour('choix-semestre')" class="btn-retour">Retour</button>
+        <button class="btn-ajouter" onclick="ajouterModule()">Ajouter un module</button>
+        <button class="btn-supprimer" onclick="supprimerDerniereLigne()">Supprimer le dernier module</button>
+        <button onclick="retour('choix-semestre')">Retour</button>
+        <div id="signature">Par Dilmi Amine</div>
     </div>
 
-    <p class="signature">Par Dilmi Amine</p>
-
     <script>
-        const modulesParDefaut = {
-            'L1_MI_S1': ['Analyse', 'Algèbre', 'ASD', 'Structure', 'Anglais', 'Physique', 'Projet'],
-            'L1_MI_S2': ['Analyse', 'Algèbre', 'ASD', 'Structure', 'Probastat', 'Physique', 'OPM', 'TIC']
-            // Ajoutez les autres modules ici
+        const modulesParSemestre = {
+            MI: {
+                S1: ["Analyse", "Algèbre", "ASD", "Structure", "Anglais", "Physique", "Projet"],
+                S2: ["Analyse", "Algèbre", "ASD", "Structure", "Probastat", "Physique", "OPM", "TIC"],
+                S3: ["ADO", "ASD", "SI", "TG", "MN", "IM", "Anglais"],
+                S4: ["THL", "SE", "BDD", "RES", "POO", "DWEB", "Anglais"],
+                S5: ["SID", "SAD", "GL", "IHM", "ASI", "PAW", "ENVS", "SYST", "Anglais"],
+                S6: ["L31M", "L32M", "L34M", "L35M"],
+                S7: ["M11M", "M12M", "M13M"],
+                S8: ["M11M", "M12M"],
+                S9: ["M11M", "M12M"],
+                S10: ["M11M", "M12M"]
+            },
+            ST: { /* Ajouter des modules */ },
+            SM: { /* Ajouter des modules */ },
+            ECG: { /* Ajouter des modules */ }
         };
 
+        let filiereSelectionnee = "";
+        let semestreSelectionne = "";
+
         function choisirFiliere(filiere) {
-            sessionStorage.setItem('filiere', filiere);
+            filiereSelectionnee = filiere;
             document.getElementById('choix-filiere').style.display = 'none';
             document.getElementById('choix-semestre').style.display = 'block';
+            afficherSemestres();
+        }
+
+        function afficherSemestres() {
+            const semestresDiv = document.getElementById('semestres');
+            semestresDiv.innerHTML = '';
+            for (let i = 1; i <= 10; i++) {
+                const semestre = `S${i}`;
+                const button = document.createElement('button');
+                button.textContent = semestre;
+                button.onclick = () => choisirSemestre(semestre);
+                semestresDiv.appendChild(button);
+            }
         }
 
         function choisirSemestre(semestre) {
-            const filiere = sessionStorage.getItem('filiere');
-            const key = `${filiere}_${semestre}`;
-            const modules = modulesParDefaut[key] || [];
-
+            semestreSelectionne = semestre;
             document.getElementById('choix-semestre').style.display = 'none';
             document.getElementById('tableau-modules').style.display = 'block';
+            chargerModules();
+        }
 
+        function chargerModules() {
             const tableBody = document.getElementById('table-body');
             tableBody.innerHTML = '';
-            modules.forEach((module, index) => {
-                ajouterModule(module, index + 1);
+            const modules = modulesParSemestre[filiereSelectionnee][semestreSelectionne] || [];
+
+            modules.forEach(module => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${module}</td>
+                    <td><input type="number" value="0" min="0" max="20"></td>
+                    <td><input type="number" min="0" max="20"></td>
+                    <td><input type="number" min="0" max="20"></td>
+                    <td><input type="number" min="0" max="20"></td>
+                    <td><input type="number" min="0" max="20"></td>
+                    <td>0</td>
+                    <td><input type="number" min="0" max="20"></td>
+                    <td>0</td>
+                    <td><input type="number" min="0" max="20"></td>
+                    <td>0</td>
+                `;
+                tableBody.appendChild(row);
             });
         }
 
-        function ajouterModule(nom = '', index = 0) {
+        function ajouterModule() {
             const tableBody = document.getElementById('table-body');
-
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td><input type="text" value="${nom}" placeholder="Module ${index}" disabled></td>
-                <td><input type="number" class="coefficient" value="0" min="0" max="20"></td>
-                <td><input type="number" class="interro" min="0" max="20"></td>
-                <td><input type="number" class="cc1" min="0" max="20"></td>
-                <td><input type="number" class="cc2" min="0" max="20"></td>
-                <td><input type="number" class="autre" min="0" max="20"></td>
-                <td><span class="moyenne-cc">0</span></td>
-                <td><input type="number" class="examen" min="0" max="20"></td>
-                <td><span class="moyenne">0</span></td>
+                <td><input type="text" placeholder="Nouveau module"></td>
+                <td><input type="number" value="0" min="0" max="20"></td>
+                <td><input type="number" min="0" max="20"></td>
+                <td><input type="number" min="0" max="20"></td>
+                <td><input type="number" min="0" max="20"></td>
+                <td><input type="number" min="0" max="20"></td>
+                <td>0</td>
+                <td><input type="number" min="0" max="20"></td>
+                <td>0</td>
+                <td><input type="number" min="0" max="20"></td>
+                <td>0</td>
             `;
             tableBody.appendChild(row);
         }
 
         function supprimerDerniereLigne() {
             const tableBody = document.getElementById('table-body');
-            if (tableBody.children.length > 0) {
-                tableBody.lastChild.remove();
-            } else {
-                alert('Aucune ligne à supprimer.');
+            if (tableBody.lastChild) {
+                tableBody.removeChild(tableBody.lastChild);
             }
         }
 
