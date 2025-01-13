@@ -29,25 +29,25 @@
         }
 
         button {
-            padding: 10px 20px;
-            font-size: 16px;
+            padding: 10px 15px;
+            font-size: 14px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            margin: 10px;
+            margin: 5px;
         }
 
         button:hover {
-            background-color: #0056b3;
+            opacity: 0.9;
         }
 
-        #ajouter-module {
+        .btn-ajouter {
             background-color: #28a745;
             color: white;
         }
 
-        #ajouter-module:hover {
+        .btn-ajouter:hover {
             background-color: #218838;
         }
 
@@ -145,7 +145,6 @@
                 <!-- Modules dynamiques -->
             </tbody>
         </table>
-        <button id="ajouter-module" onclick="ajouterModule()">Ajouter un module</button>
         <div id="resultat"></div>
         <button onclick="retour('choix-semestre')">Retour</button>
     </div>
@@ -193,6 +192,7 @@
                 <td><input type="number" class="examen-rattrapage" min="0" max="20"></td>
                 <td><span class="moyenne-rattrapage">0</span></td>
                 <td>
+                    <button class="btn-ajouter" onclick="ajouterModule()">Ajouter</button>
                     <button class="btn-supprimer" onclick="supprimerLigne(this)">Supprimer</button>
                 </td>
             `;
