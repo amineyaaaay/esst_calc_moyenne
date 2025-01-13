@@ -89,6 +89,14 @@
             display: flex;
             justify-content: center;
         }
+
+        .footer-text {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: #555;
+        }
     </style>
 </head>
 <body>
@@ -146,8 +154,12 @@
             <button class="btn-supprimer" onclick="supprimerDerniereLigne()">Supprimer le dernier module</button>
         </div>
 
+        <button class="btn-calculer" onclick="calculerMoyenne()">Calculer</button>
+
         <button onclick="retour('choix-semestre')">Retour</button>
     </div>
+
+    <div class="footer-text">Par Dilmi Amine</div>
 
     <script>
         function choisirAnnee(annee) {
@@ -225,6 +237,10 @@
             }
         }
 
+        function calculerMoyenne() {
+            alert('Calcul de la moyenne en cours...');
+        }
+
         function retour(section) {
             document.querySelectorAll('.container').forEach(el => el.style.display = 'none');
             document.getElementById(section).style.display = 'block';
@@ -232,3 +248,4 @@
     </script>
 </body>
 </html>
+
