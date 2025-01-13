@@ -157,19 +157,37 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${module}</td>
-                    <td><input type="number" class="coefficient" value="1" min="0" max="20"></td>
-                    <td><input type="number" class="interro" min="0" max="20"></td>
-                    <td><input type="number" class="cc1" min="0" max="20"></td>
-                    <td><input type="number" class="cc2" min="0" max="20"></td>
-                    <td><input type="number" class="autre" min="0" max="20"></td>
+                    <td><input type="number" class="coefficient" value="0" min="0" max="20" onchange="checkCoef(this)"></td>
+                    <td><input type="number" class="interro" min="0" max="20" onchange="checkNote(this)"></td>
+                    <td><input type="number" class="cc1" min="0" max="20" onchange="checkNote(this)"></td>
+                    <td><input type="number" class="cc2" min="0" max="20" onchange="checkNote(this)"></td>
+                    <td><input type="number" class="autre" min="0" max="20" onchange="checkNote(this)"></td>
                     <td><span class="moyenne-cc">0</span></td>
-                    <td><input type="number" class="examen-normale" min="0" max="20"></td>
+                    <td><input type="number" class="examen-normale" min="0" max="20" onchange="checkNote(this)"></td>
                     <td><span class="moyenne-normale">0</span></td>
-                    <td><input type="number" class="examen-rattrapage" min="0" max="20"></td>
+                    <td><input type="number" class="examen-rattrapage" min="0" max="20" onchange="checkNote(this)"></td>
                     <td><span class="moyenne-rattrapage">0</span></td>
                 `;
                 tableBody.appendChild(row);
             });
+        }
+
+        function checkCoef(input) {
+            let value = parseFloat(input.value);
+            if (isNaN(value) || value < 0) {
+                input.value = 0;
+            } else if (value > 20) {
+                input.value = 20;
+            }
+        }
+
+        function checkNote(input) {
+            let value = parseFloat(input.value);
+            if (isNaN(value) || value < 0) {
+                input.value = 0;
+            } else if (value > 20) {
+                input.value = 20;
+            }
         }
 
         function calculerMoyenne() {
@@ -185,10 +203,9 @@
                 const examenNormale = parseFloat(row.querySelector('.examen-normale').value) || null;
                 const examenRattrapage = parseFloat(row.querySelector('.examen-rattrapage').value) || null;
 
-                // Calcul de la moyenne CC (en excluant les cases vides)
-                const moyenneCC = (cc1 || cc2 || interro || autre) 
-                    ? ((cc1 + cc2 + (interro || 0) + (autre || 0)) / (4 - (interro === null ? 1 : 0) - (autre === null ? 1 : 0))).toFixed(2) 
-                    : 0;
+                const moyenneCC = interro !== null || autre !== null 
+                    ? ((cc1 + cc2 + (interro || 0) + (autre || 0)) / (4 - (interro === null ? 1 : 0) - (autre === null ? 1 : 0))).toFixed(2)
+                    : ((cc1 + cc2) / 2).toFixed(2);
                 row.querySelector('.moyenne-cc').textContent = moyenneCC;
 
                 const moyenneNormale = examenNormale !== null ? (0.4 * moyenneCC + 0.6 * examenNormale).toFixed(2) : moyenneCC;
