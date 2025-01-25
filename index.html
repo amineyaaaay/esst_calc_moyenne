@@ -343,7 +343,9 @@
                 row.querySelector('.moyenne').textContent = moyenne.toFixed(2);
                 row.querySelector('.moyenne-rattrapage').textContent = moyenneRattrapage.toFixed(2);
 
-                sommeMoyennes += moyenne * coeff;
+                const finalMoyenne = isNaN(rattrapage) ? moyenne : moyenneRattrapage;
+
+                sommeMoyennes += finalMoyenne * coeff;
                 sommeCoefficients += coeff;
             });
 
