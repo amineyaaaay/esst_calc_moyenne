@@ -314,15 +314,28 @@
                 const examen = parseFloat(row.querySelector('.examen').value);
                 const rattrapage = parseFloat(row.querySelector('.rattrapage').value);
 
-                // Calculate Moyenne CC based on the conditions provided
-                let moyenneCC;
-                if (isNaN(interro) || isNaN(cc1) || isNaN(cc2) || isNaN(autre)) {
-                    moyenneCC = 0;
-                } else {
-                    moyenneCC = (interro + cc1 + cc2 + autre) / 4;
+                let totalCC = 0;
+                let countCC = 0;
+
+                if (!isNaN(cc1)) {
+                    totalCC += cc1;
+                    countCC++;
+                }
+                if (!isNaN(cc2)) {
+                    totalCC += cc2;
+                    countCC++;
+                }
+                if (!isNaN(interro)) {
+                    totalCC += interro;
+                    countCC++;
+                }
+                if (!isNaN(autre)) {
+                    totalCC += autre;
+                    countCC++;
                 }
 
-                // Calculate the final average and rattrapage if necessary
+                const moyenneCC = countCC > 0 ? totalCC / countCC : 0;
+
                 const moyenne = (moyenneCC * 0.4 + examen * 0.6);
                 const moyenneRattrapage = (moyenneCC * 0.4 + rattrapage * 0.6);
 
