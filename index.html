@@ -30,11 +30,9 @@
             position: relative;
         }
 
-        .container::before {
+        .container::before, .container::after {
             content: '';
             position: absolute;
-            top: -20px;
-            right: -20px;
             width: 100px;
             height: 100px;
             background: url('https://via.placeholder.com/100') no-repeat center center;
@@ -42,16 +40,14 @@
             opacity: 0.3;
         }
 
+        .container::before {
+            top: -20px;
+            right: -20px;
+        }
+
         .container::after {
-            content: '';
-            position: absolute;
             bottom: -20px;
             left: -20px;
-            width: 100px;
-            height: 100px;
-            background: url('https://via.placeholder.com/100') no-repeat center center;
-            background-size: cover;
-            opacity: 0.3;
         }
 
         h1 {
@@ -84,7 +80,7 @@
         }
 
         th, td {
-            padding: 12px;
+            padding: 8px;
             text-align: center;
             border: 1px solid #ddd;
         }
@@ -100,10 +96,10 @@
 
         input[type="number"], input[type="text"] {
             width: 100%;
-            padding: 10px;
+            padding: 5px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            font-size: 18px;
+            font-size: 14px;
             box-sizing: border-box;
         }
 
@@ -139,8 +135,8 @@
             }
 
             input[type="number"], input[type="text"] {
-                font-size: 16px;
-                padding: 12px;
+                font-size: 12px;
+                padding: 8px;
             }
 
             h1 {
@@ -154,17 +150,17 @@
             }
 
             table {
-                font-size: 12px;
+                font-size: 10px;
             }
 
             button {
-                font-size: 14px;
-                padding: 8px;
+                font-size: 12px;
+                padding: 6px;
             }
 
             input[type="number"], input[type="text"] {
-                font-size: 18px;
-                padding: 14px;
+                font-size: 12px;
+                padding: 6px;
             }
 
             h1 {
@@ -282,10 +278,10 @@
                 row.innerHTML = ` 
                     <td>${module}</td>
                     <td><input type="number" min="0" max="20" class="coefficient"></td>
-                    <td><input type="number" min="0" max="20" class="interro grand-champ"></td>
-                    <td><input type="number" min="0" max="20" class="cc1 grand-champ"></td>
-                    <td><input type="number" min="0" max="20" class="cc2 grand-champ"></td>
-                    <td><input type="number" min="0" max="20" class="autre grand-champ"></td>
+                    <td><input type="number" min="0" max="20" class="interro"></td>
+                    <td><input type="number" min="0" max="20" class="cc1"></td>
+                    <td><input type="number" min="0" max="20" class="cc2"></td>
+                    <td><input type="number" min="0" max="20" class="autre"></td>
                     <td class="moyenne-cc">0</td>
                     <td><input type="number" min="0" max="20" class="examen"></td>
                     <td class="moyenne">0</td>
@@ -305,10 +301,10 @@
             row.innerHTML = ` 
                 <td><input type="text" placeholder="Nouveau module"></td>
                 <td><input type="number" min="0" max="20" class="coefficient"></td>
-                <td><input type="number" min="0" max="20" class="interro grand-champ"></td>
-                <td><input type="number" min="0" max="20" class="cc1 grand-champ"></td>
-                <td><input type="number" min="0" max="20" class="cc2 grand-champ"></td>
-                <td><input type="number" min="0" max="20" class="autre grand-champ"></td>
+                <td><input type="number" min="0" max="20" class="interro"></td>
+                <td><input type="number" min="0" max="20" class="cc1"></td>
+                <td><input type="number" min="0" max="20" class="cc2"></td>
+                <td><input type="number" min="0" max="20" class="autre"></td>
                 <td class="moyenne-cc">0</td>
                 <td><input type="number" min="0" max="20" class="examen"></td>
                 <td class="moyenne">0</td>
