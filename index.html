@@ -285,15 +285,15 @@
                 const row = document.createElement('tr');
                 row.innerHTML = ` 
                     <td>${module}</td>
-                    <td><input type="number" value="0" min="1" max="99" pattern="\d{1,2}" class="coefficient"></td>
-                    <td><input type="number" min="1" max="99" pattern="\d{1,2}" class="interro"></td>
-                    <td><input type="number" min="1" max="99" pattern="\d{1,2}" class="cc1"></td>
-                    <td><input type="number" min="1" max="99" pattern="\d{1,2}" class="cc2"></td>
-                    <td><input type="number" min="1" max="99" pattern="\d{1,2}" class="autre"></td>
+                    <td><input type="number" value="0" min="1" max="20" class="coefficient"></td>
+                    <td><input type="number" min="0" max="20" class="interro"></td>
+                    <td><input type="number" min="0" max="20" class="cc1"></td>
+                    <td><input type="number" min="0" max="20" class="cc2"></td>
+                    <td><input type="number" min="0" max="20" class="autre"></td>
                     <td class="moyenne-cc">0</td>
-                    <td><input type="number" min="1" max="99" pattern="\d{1,2}" class="examen"></td>
+                    <td><input type="number" min="0" max="20" class="examen"></td>
                     <td class="moyenne">0</td>
-                    <td><input type="number" min="1" max="99" pattern="\d{1,2}" class="rattrapage"></td>
+                    <td><input type="number" min="0" max="20" class="rattrapage"></td>
                     <td class="moyenne-rattrapage">0</td>
                 `;
                 tableBody.appendChild(row);
@@ -308,15 +308,15 @@
             const row = document.createElement('tr');
             row.innerHTML = ` 
                 <td><input type="text" placeholder="Nouveau module"></td>
-                <td><input type="number" value="0" min="1" max="99" pattern="\d{1,2}" class="coefficient"></td>
-                <td><input type="number" min="1" max="99" pattern="\d{1,2}" class="interro"></td>
-                <td><input type="number" min="1" max="99" pattern="\d{1,2}" class="cc1"></td>
-                <td><input type="number" min="1" max="99" pattern="\d{1,2}" class="cc2"></td>
-                <td><input type="number" min="1" max="99" pattern="\d{1,2}" class="autre"></td>
+                <td><input type="number" value="0" min="1" max="20" class="coefficient"></td>
+                <td><input type="number" min="0" max="20" class="interro"></td>
+                <td><input type="number" min="0" max="20" class="cc1"></td>
+                <td><input type="number" min="0" max="20" class="cc2"></td>
+                <td><input type="number" min="0" max="20" class="autre"></td>
                 <td class="moyenne-cc">0</td>
-                <td><input type="number" min="1" max="99" pattern="\d{1,2}" class="examen"></td>
+                <td><input type="number" min="0" max="20" class="examen"></td>
                 <td class="moyenne">0</td>
-                <td><input type="number" min="1" max="99" pattern="\d{1,2}" class="rattrapage"></td>
+                <td><input type="number" min="0" max="20" class="rattrapage"></td>
                 <td class="moyenne-rattrapage">0</td>
             `;
             tableBody.appendChild(row);
